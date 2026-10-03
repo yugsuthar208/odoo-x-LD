@@ -2,7 +2,8 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabase, type CampusRole } from "../../lib/supabase";
+import { getSupabase } from "../lib/supabase";
+import type { CampusRole } from "../lib/supabase/types";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,8 +43,72 @@ export default function LoginPage() {
     window.location.href = "/";
   }
 
-  return <main className="login-shell" suppressHydrationWarning><section className="login-story"><a className="brand login-brand" href="/"><span className="brand-mark">c<span>✳</span></span><span>campus<span className="brand-light">.commons</span><small>YOUR CAMPUS, IN SYNC</small></span></a><div className="login-story-copy"><p className="eyebrow">NORTHSTAR UNIVERSITY · AUTUMN ’26</p><h1>Your campus<br/>is better <em>together.</em></h1><p>One home for your clubs, events, people and the little things that make campus yours.</p><div className="login-highlights"><span><b>24</b><small>active clubs</small></span><span><b>38</b><small>things this week</small></span><span><b>1</b><small>shared campus</small></span></div><div className="login-story-art"><span className="login-sun">☼</span><span className="login-flower">✳</span><span className="login-doodle">good things<br/>grow here</span><div className="login-hill"/></div></div><footer>✳ CAMPUS COMMONS <span>MADE FOR THE PEOPLE WHO MAKE CAMPUS.</span></footer></section>
-    <section className="login-panel"><div className="login-card"><div className="login-card-topline"><span><i className="live-dot"/> NORTHSTAR UNIVERSITY</span><small>AUTUMN ’26</small></div><p className="eyebrow">YOUR PEOPLE ARE HERE</p><h2>{mode === "signin" ? "Welcome back." : "Find your place."}</h2><p className="login-intro">{mode === "signin" ? "Sign in to see what’s happening around you." : "Create your campus account and come on in."}</p><div className="login-tabs"><button className={mode === "signin" ? "active" : ""} onClick={() => { setMode("signin"); setError(""); setNotice(""); }}>SIGN IN</button><button className={mode === "signup" ? "active" : ""} onClick={() => { setMode("signup"); setError(""); setNotice(""); }}>CREATE ACCOUNT</button></div><form className="login-form" onSubmit={submit}>{mode === "signup" && <label>Your name<input autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="What should we call you?" required/></label>}<label>University email<input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@northstar.edu" required/></label><label>Password<input type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} minLength={8} value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 8 characters" required/></label>{mode === "signin" && <button type="button" className="forgot-button" onClick={resetPassword}>Forgot password?</button>}<button className="login-submit" disabled={busy}>{busy ? "ONE MOMENT…" : mode === "signin" ? "COME ON IN ↗" : "CREATE MY ACCOUNT ↗"}</button></form>{error && <p className="login-feedback error">{error}</p>}{notice && <p className="login-feedback success">{notice}</p>}
-      <div className="preview-box"><div className="preview-title"><span>✳</span><div><b>Just looking around?</b><small>Explore the interactive demo without an account.</small></div></div><label>PREVIEW A ROLE<select value={previewRole} onChange={e => setPreviewRole(e.target.value as CampusRole)}><option>Student</option><option>Club Leader</option><option>Faculty</option><option>Student Council</option><option>Admin</option></select></label><button onClick={enterPreview}>EXPLORE THE DEMO ↗</button></div>
-      <p className="login-security">Real accounts use Supabase authentication. Campus roles are assigned by an administrator.</p></div></section></main>;
+  return (
+    <main className="login-shell" suppressHydrationWarning>
+      <section className="login-story">
+        <a className="brand login-brand" href="/">
+          <span className="brand-mark">c<span>✳</span></span>
+          <span>campus<span className="brand-light">.commons</span><small>YOUR CAMPUS, IN SYNC</small></span>
+        </a>
+        <div className="login-story-copy">
+          <p className="eyebrow">NORTHSTAR UNIVERSITY · AUTUMN ’26</p>
+          <h1>Your campus<br/>is better <em>together.</em></h1>
+          <p>One home for your clubs, events, people and the little things that make campus yours.</p>
+          <div className="login-highlights">
+            <span><b>24</b><small>active clubs</small></span>
+            <span><b>38</b><small>things this week</small></span>
+            <span><b>1</b><small>shared campus</small></span>
+          </div>
+        </div>
+        <div className="login-story-art">
+          <span className="login-sun">☼</span>
+          <span className="login-flower">✳</span>
+          <span className="login-doodle">good things<br/>grow here</span>
+          <div className="login-hill"/>
+        </div>
+        <footer>✳ CAMPUS COMMONS <span>MADE FOR THE PEOPLE WHO MAKE CAMPUS.</span></footer>
+      </section>
+      <section className="login-panel">
+        <div className="login-card">
+          <div className="login-card-topline">
+            <span><i className="live-dot"/> NORTHSTAR UNIVERSITY</span>
+            <small>AUTUMN ’26</small>
+          </div>
+          <p className="eyebrow">YOUR PEOPLE ARE HERE</p>
+          <h2>{mode === "signin" ? "Welcome back." : "Find your place."}</h2>
+          <p className="login-intro">{mode === "signin" ? "Sign in to see what’s happening around you." : "Create your campus account and come on in."}</p>
+          <div className="login-tabs">
+            <button className={mode === "signin" ? "active" : ""} onClick={() => { setMode("signin"); setError(""); setNotice(""); }}>SIGN IN</button>
+            <button className={mode === "signup" ? "active" : ""} onClick={() => { setMode("signup"); setError(""); setNotice(""); }}>CREATE ACCOUNT</button>
+          </div>
+          <form className="login-form" onSubmit={submit}>
+            {mode === "signup" && <label>Your name<input autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="What should we call you?" required/></label>}
+            <label>University email<input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@northstar.edu" required/></label>
+            <label>Password<input type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} minLength={8} value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 8 characters" required/></label>
+            {mode === "signin" && <button type="button" className="forgot-button" onClick={resetPassword}>Forgot password?</button>}
+            <button className="login-submit" disabled={busy}>{busy ? "ONE MOMENT…" : mode === "signin" ? "COME ON IN ↗" : "CREATE MY ACCOUNT ↗"}</button>
+          </form>
+          {error && <p className="login-feedback error">{error}</p>}
+          {notice && <p className="login-feedback success">{notice}</p>}
+          <div className="preview-box">
+            <div className="preview-title">
+              <span>✳</span>
+              <div><b>Just looking around?</b><small>Explore the interactive demo without an account.</small></div>
+            </div>
+            <label>PREVIEW A ROLE
+              <select value={previewRole} onChange={e => setPreviewRole(e.target.value as CampusRole)}>
+                <option>Student</option>
+                <option>Club Leader</option>
+                <option>Faculty</option>
+                <option>Student Council</option>
+                <option>Admin</option>
+              </select>
+            </label>
+            <button onClick={enterPreview}>EXPLORE THE DEMO ↗</button>
+          </div>
+          <p className="login-security">Real accounts use Supabase authentication. Campus roles are assigned by an administrator.</p>
+        </div>
+      </section>
+    </main>
+  );
 }

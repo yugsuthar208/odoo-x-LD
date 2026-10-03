@@ -4,6 +4,25 @@
 - Adopted the latest `origin/main` modular refactor as the local `main` baseline.
 - Refined the login page layout while preserving its auth and preview flow.
 - Updated AI context docs to match the component modules, shared types, and standalone Playwright script.
+## [2026-10-03] - Login Story Hero & Illustration Layout Correction
+- **Unobstructed Hero Typography**: Resolved overlapping illustration issue on `/login` where the decorative green landscape hills (`.login-hill`) overlapped the hero heading ("Your campus is better together.") and description copy.
+- **Structural Separation**: Separated `.login-story-art` from inside `.login-story-copy` into a dedicated sibling container anchored directly to the bottom of `.login-story` with `bottom: 0`, `height: 170px`, `z-index: 1`, and `pointer-events: none`. Elevated `.login-story-copy` to `z-index: 10` with centered vertical spacing.
+- **Visual Verification**: Rendered and captured headless browser screenshot confirming complete, crisp legibility of headline, subtitle, and footer with rolling hills cleanly positioned at the base. All 56 automated test suites re-verified with 100% PASS.
+
+## [2026-10-03] - Browser Extension Attribute Neutralization Shield
+- **Targeted Root Boundary Protection**: Injected early client-side DOM & console interception shield into `<head suppressHydrationWarning>` in `app/layout.tsx`.
+- **Extension Immunity**: Intercepts `Element.prototype.setAttribute`, attaches a high-priority `MutationObserver` to strip `bis_*` attributes (e.g. `bis_skin_checked="1"` from Bitdefender / Hover extensions) before React processes them, and silences Next.js dev overlay triggers for extension-injected attribute mismatches on root metadata boundaries (`\__next_metadata_boundary__`).
+- **Verified**: Full test suite (`test_all_features.py`) re-executed with 56/56 PASS.
+
+## [2026-10-03] - Global Typography & Small Text Legibility Refinement
+- **Accessible & Comfortable Micro-Copy**: Raised undersized labels, timestamps, metadata, and helper text across the entire website from illegible 6px–9px thresholds up to balanced 10.5px–13.5px scales with crisp monospace tracking (`DM Mono`) and legible body copy (`DM Sans`).
+- **Targeted Improvements Across Modules**:
+  - **Announcements**: Elevated feed meta (`ALL STUDENTS · Today · Student Council`), card copy, audience tags, channel footers, and pin action buttons to 11px–13.5px.
+  - **Overview & Dashboard**: Scaled quick stats sub-labels, activity timestamps, event badges, and banner actions.
+  - **Sidebar & Topbar**: Increased campus switch subtitles, role switch select labels, navigation badge counters, and breadcrumbs to 11px–12.5px.
+  - **Discover Clubs, Events & Volunteering**: Raised member counts, category chips, date sub-labels, spot availability tags, and registration buttons.
+  - **Modals, Forms & Popovers**: Improved ticket stubs, modal descriptions, toast messages, notification dropdown items, and form helper copy.
+- **Verification**: Verified visual balance with Playwright browser screenshots and re-ran the full automated test suite (`test_all_features.py`) with 56/56 PASS (0 failures, 0 console errors).
 
 ## [2026-10-03] - Hydration Mismatch Resolution & 100% Automated Test Suite Verification
 - **Hydration Error Resolution**: Resolved Next.js SSR/Client hydration error (`bis_skin_checked="1"`) caused by browser extensions (e.g. Bitdefender, privacy extensions) injecting attributes into DOM nodes before React hydration by applying `suppressHydrationWarning` on `<html lang="en">`, `<body>`, and `<main>` root shells across `app/layout.tsx`, `app/page.tsx`, and `app/login/page.tsx`.

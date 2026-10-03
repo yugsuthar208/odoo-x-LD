@@ -50,3 +50,937 @@
 .login-security{margin-top:16px;font-size:9px}
 @media(max-width:1120px){.login-shell{grid-template-columns:minmax(0,1fr) minmax(430px,.9fr)}.login-story{padding-left:48px;padding-right:48px}.login-story-copy h1{font-size:clamp(51px,6vw,78px)}}
 @media(max-width:760px){.login-shell{grid-template-columns:1fr}.login-story{min-height:390px;padding:22px 22px 18px}.login-story-copy{margin:37px 0 125px}.login-story-copy h1{font-size:43px;letter-spacing:-2px}.login-story-copy>p:last-of-type{max-width:300px;margin-top:11px;font-size:10px}.login-highlights{gap:6px;margin-top:17px}.login-highlights span{min-width:0;flex:1;padding:8px}.login-highlights b{font-size:17px}.login-highlights small{font-size:6px}.login-story-art{right:-35px;bottom:-305px;width:300px;height:330px;scale:.8}.login-panel{padding:30px 22px 38px}.login-card{max-width:470px}.login-card-topline{margin-bottom:22px}.login-card h2{font-size:40px}.login-form input{height:46px}}
+
+
+/* ===================================================================   LEGIBILITY & TYPOGRAPHIC SCALE REFINEMENT
+   Elevates micro-copy and small texts to comfortable, accessible reading sizes
+   across all 18 campus modules while maintaining editorial balance.
+   ========================================================================== */
+
+body {
+  font-size: 14px;
+}
+
+/* Eyebrows, Monospace Labels & Uppercase Tracking */
+.eyebrow,
+.panel-heading .eyebrow,
+.bottom-banner .eyebrow,
+.balance-card .eyebrow,
+.budget-note .eyebrow,
+.council-banner .eyebrow,
+.election-panel .eyebrow,
+.portal-info .eyebrow,
+.offer-card .eyebrow,
+.membership-hero .eyebrow,
+.achievement-profile .eyebrow,
+.conversation-list > .eyebrow {
+  font: 500 11px/1.4 'DM Mono', monospace !important;
+  letter-spacing: 1.1px;
+}
+
+small {
+  font-size: 11px;
+}
+
+/* Sidebar & Navigation */
+.brand small {
+  font: 500 10.5px 'DM Mono', monospace !important;
+  letter-spacing: 1.2px;
+}
+
+.campus-switch b {
+  font-size: 12.5px !important;
+}
+
+.campus-switch small,
+.profile-button small {
+  font-size: 11px !important;
+  color: var(--muted);
+}
+
+.nav-label {
+  font: 500 11px 'DM Mono', monospace !important;
+  letter-spacing: 1.1px;
+  color: #8c9086;
+}
+
+.side-nav button {
+  font-size: 13.5px !important;
+  height: 41px;
+}
+
+.nav-badge {
+  width: 21px;
+  height: 21px;
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.side-tip > b {
+  font: 500 19px/1.12 'Fraunces', serif !important;
+}
+
+.side-tip p {
+  font-size: 12px !important;
+  line-height: 1.55;
+  color: #6a6f64;
+}
+
+.side-tip > button {
+  font-size: 12px !important;
+  font-weight: 650;
+}
+
+.profile-button b {
+  font-size: 12.5px !important;
+}
+
+/* Topbar & Breadcrumbs */
+.breadcrumbs {
+  font-size: 12px !important;
+}
+
+.term-pill {
+  font: 500 11px 'DM Mono', monospace !important;
+  letter-spacing: 0.5px;
+  padding: 6px 11px !important;
+}
+
+.role-switch {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.role-switch select {
+  font: 500 12px 'DM Sans', sans-serif !important;
+  max-width: 120px !important;
+  padding: 6px 20px 6px 8px !important;
+}
+
+/* Welcome & Overview */
+.welcome-copy {
+  font-size: 14px !important;
+  line-height: 1.55;
+}
+
+.quick-stats article > p {
+  font-size: 12.5px !important;
+  line-height: 1.45;
+}
+
+.quick-stats article > button {
+  font-size: 12px !important;
+  font-weight: 600;
+}
+
+.stat-trend {
+  font-size: 11px !important;
+}
+
+.event-type,
+.full-event-copy .event-type {
+  font: 500 11px 'DM Mono', monospace !important;
+  letter-spacing: 0.4px;
+}
+
+.event-date small,
+.big-date small,
+.big-date span {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.event-detail h3 {
+  font-size: 13.5px !important;
+  font-weight: 650;
+}
+
+.event-detail p,
+.full-event-copy > p {
+  font-size: 12.5px !important;
+  line-height: 1.5;
+}
+
+.text-link,
+.activity-link {
+  font-size: 12px !important;
+  font-weight: 600;
+}
+
+.all-events {
+  font-size: 12px !important;
+  font-weight: 600;
+}
+
+.feed-item p {
+  font-size: 12px !important;
+  line-height: 1.5;
+}
+
+.feed-item p b {
+  font-size: 13px !important;
+}
+
+.feed-item p small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.bottom-banner > button {
+  font-size: 12px !important;
+  font-weight: 600;
+  padding: 10px 14px !important;
+}
+
+.app-footer,
+.app-footer button {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+/* Discover Clubs */
+.searchbox input {
+  font-size: 13px !important;
+}
+
+.filter-chips button {
+  font: 500 11.5px 'DM Mono', monospace !important;
+  padding: 7px 12px !important;
+}
+
+.club-cat {
+  font: 500 11px 'DM Mono', monospace !important;
+  padding: 5px 9px !important;
+}
+
+.member-count {
+  font-size: 12px !important;
+}
+
+.club-card-body > p {
+  font-size: 13px !important;
+  line-height: 1.6;
+}
+
+.club-next span {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.club-next b {
+  font-size: 12.5px !important;
+}
+
+.join-button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 10px 12px !important;
+}
+
+.club-cta b {
+  font-size: 16px !important;
+}
+
+.club-cta p {
+  font-size: 12.5px !important;
+}
+
+.club-cta button {
+  font-size: 12px !important;
+  font-weight: 600;
+  padding: 9px 13px !important;
+}
+
+/* Events & Ticketing */
+.events-toolbar,
+.events-toolbar button,
+.shop-toolbar,
+.shop-toolbar button {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.attending {
+  font-size: 12px !important;
+}
+
+.attendee-stack i {
+  font: 500 9.5px 'DM Mono', monospace !important;
+  width: 21px;
+  height: 21px;
+}
+
+.ticket-button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 10px 14px !important;
+}
+
+.event-footer-note {
+  font-size: 13px !important;
+}
+
+.event-footer-note button {
+  font-size: 12px !important;
+  font-weight: 600;
+}
+
+/* Volunteers */
+.volunteer-art small {
+  font: 500 10.5px/1.35 'DM Mono', monospace !important;
+}
+
+.impact-strip p b {
+  font-size: 15px !important;
+}
+
+.impact-strip p small {
+  font-size: 11.5px !important;
+}
+
+.impact-progress > span {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.impact-progress > b {
+  font-size: 12.5px !important;
+}
+
+.impact-progress > b small {
+  font-size: 11.5px !important;
+}
+
+.section-tabs button {
+  font-size: 13.5px !important;
+  font-weight: 600;
+}
+
+.section-tabs button span {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.vol-copy small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.vol-copy h3 {
+  font-size: 17px !important;
+}
+
+.vol-copy p {
+  font-size: 12.5px !important;
+}
+
+.spots {
+  font: 500 10.5px 'DM Mono', monospace !important;
+  padding: 5px 8px !important;
+}
+
+/* Tasks & Inline Forms */
+.task-progress {
+  font-size: 12px !important;
+  font-weight: 600;
+}
+
+.inline-create input,
+.issue-form input,
+.issue-form select,
+.message-compose input,
+.finance-create input,
+.finance-create select {
+  font-size: 13px !important;
+}
+
+.inline-create button,
+.issue-form > button,
+.finance-create button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 9px 14px !important;
+}
+
+.task-row b {
+  font-size: 13.5px !important;
+}
+
+.task-row small {
+  font-size: 12px !important;
+}
+
+.task-row > span,
+.issue-status,
+.status-badge {
+  font: 500 11px 'DM Mono', monospace !important;
+  padding: 5px 9px !important;
+}
+
+/* Marketplace */
+.market-art > small {
+  font: 500 10.5px 'DM Mono', monospace !important;
+}
+
+.market-card > div:last-child > small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.market-card > div:last-child > b {
+  font-size: 14px !important;
+}
+
+.market-card > div:last-child > button {
+  font: 600 11px 'DM Mono', monospace !important;
+  padding: 7px 11px !important;
+}
+
+/* Messages */
+.conversation-list b {
+  font-size: 13px !important;
+}
+
+.conversation-list small {
+  font-size: 11.5px !important;
+}
+
+.conversation > header b {
+  font-size: 13.5px !important;
+}
+
+.conversation > header small {
+  font-size: 11.5px !important;
+}
+
+.day-divider {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.message-bubble small {
+  font-size: 11px !important;
+}
+
+.message-bubble p {
+  font-size: 13px !important;
+  line-height: 1.55;
+}
+
+.privacy-note {
+  font-size: 11px !important;
+}
+
+/* Help Desk */
+.issue-form label {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.issue-form > small {
+  font-size: 11.5px !important;
+}
+
+.issue-ticket {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.issue-row small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.issue-row h3 {
+  font-size: 16px !important;
+}
+
+.issue-row p {
+  font-size: 12.5px !important;
+}
+
+.issue-row > button {
+  font-size: 12px !important;
+  padding: 6px 11px !important;
+}
+
+/* Finance */
+.balance-label {
+  font-size: 12.5px !important;
+}
+
+.balance-change {
+  font-size: 12.5px !important;
+}
+
+.balance-change small {
+  font-size: 11.5px !important;
+}
+
+.finance-stat > small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.finance-stat > span:last-child {
+  font-size: 11.5px !important;
+}
+
+.ledger-head {
+  font: 500 11px 'DM Mono', monospace !important;
+  padding: 9px 4px !important;
+}
+
+.ledger-row {
+  font-size: 12.5px !important;
+  min-height: 46px;
+}
+
+.ledger-row > b,
+.ledger-row strong {
+  font-size: 12.5px !important;
+}
+
+.budget-note > p:not(.eyebrow) {
+  font-size: 13px !important;
+  line-height: 1.6;
+}
+
+.budget-note button {
+  font-size: 12px !important;
+}
+
+.budget-note > small {
+  font: 500 10.5px 'DM Mono', monospace !important;
+}
+
+/* Council & Elections */
+.council-seal small {
+  font: 500 10.5px/1.4 'DM Mono', monospace !important;
+}
+
+.council-banner p:last-child {
+  font-size: 13px !important;
+}
+
+.council-banner button {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.voice-row small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.voice-row h3 {
+  font-size: 14px !important;
+}
+
+.voice-row p {
+  font-size: 12px !important;
+}
+
+.election-panel > p:not(.eyebrow) {
+  font-size: 12.5px !important;
+  line-height: 1.55;
+}
+
+.election-date span {
+  font: 500 10.5px 'DM Mono', monospace !important;
+}
+
+.election-date b {
+  font-size: 12.5px !important;
+}
+
+.election-panel > button {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.council-roles > span {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.council-roles > div {
+  font-size: 12px !important;
+}
+
+.council-roles i {
+  font: 500 10px 'DM Mono', monospace !important;
+}
+
+.council-roles small {
+  font-size: 11px !important;
+}
+
+.election-notice p {
+  font-size: 12.5px !important;
+}
+
+.election-open {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.candidate-card > small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.candidate-card p {
+  font-size: 12.5px !important;
+  line-height: 1.6;
+}
+
+.candidate-card button {
+  font: 600 11px 'DM Mono', monospace !important;
+  padding: 10px 8px !important;
+}
+
+.demo-boundary {
+  font: 500 11px 'DM Mono', monospace !important;
+  line-height: 1.6;
+}
+
+/* Administration */
+.admin-summary span {
+  font-size: 12.5px !important;
+}
+
+.admin-user b {
+  font-size: 13.5px !important;
+}
+
+.admin-user small {
+  font-size: 11.5px !important;
+}
+
+.admin-user select {
+  font-size: 12px !important;
+}
+
+.permission-map span {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.permission-map p {
+  font-size: 12.5px !important;
+  line-height: 1.55;
+}
+
+/* College Portal (SRS) */
+.news-card small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.news-card p {
+  font-size: 13px !important;
+  line-height: 1.55;
+}
+
+.portal-info > p:not(.eyebrow) {
+  font-size: 13px !important;
+  line-height: 1.6;
+}
+
+.portal-info button,
+.offer-card button {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.offer-card small {
+  font-size: 12.5px !important;
+  line-height: 1.5;
+}
+
+.portal-club-row button > b {
+  font-size: 13px !important;
+}
+
+.portal-club-row button > small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+/* Membership (SRS) */
+.membership-hero p:last-child {
+  font-size: 13px !important;
+  line-height: 1.55;
+}
+
+.membership-ring small {
+  font: 500 10.5px 'DM Mono', monospace !important;
+}
+
+.membership-cover small {
+  font: 500 10.5px 'DM Mono', monospace !important;
+}
+
+.membership-body > p {
+  font-size: 12.5px !important;
+}
+
+.benefit-list span {
+  font-size: 12.5px !important;
+  line-height: 1.8;
+}
+
+.soft-button,
+.primary-button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 10px !important;
+}
+
+.membership-note p,
+.shop-note p {
+  font-size: 12.5px !important;
+  line-height: 1.5;
+}
+
+.membership-note button,
+.shop-note button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+}
+
+/* Announcements (SRS) - Prominent in user feedback */
+.announcement-meta small {
+  font: 500 12px 'DM Mono', monospace !important;
+  color: #72776d;
+}
+
+.announcement-card > p {
+  font-size: 13.5px !important;
+  line-height: 1.65;
+  color: #5d6359;
+}
+
+.announcement-foot {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.announcement-foot button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 3px 6px;
+}
+
+.announcement-compose label {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.announcement-compose textarea {
+  font-size: 13px !important;
+}
+
+.announcement-compose select {
+  font-size: 12.5px !important;
+}
+
+.announcement-compose > button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 11px !important;
+}
+
+.announcement-compose > small {
+  font-size: 11.5px !important;
+}
+
+.announcement-compose > p:not(.eyebrow) {
+  font-size: 13px !important;
+  line-height: 1.6;
+}
+
+/* Club Shop (SRS) */
+.shop-art > small {
+  font: 500 10.5px 'DM Mono', monospace !important;
+}
+
+.shop-body > small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.shop-body > p {
+  font-size: 12.5px !important;
+}
+
+.shop-body button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 8px 12px !important;
+}
+
+/* Achievements (SRS) */
+.achievement-profile p:not(.eyebrow) {
+  font-size: 13px !important;
+}
+
+.achievement-profile > button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+}
+
+.profile-stats span {
+  font-size: 12px !important;
+}
+
+.badge-row small {
+  font: 500 10.5px/1.35 'DM Mono', monospace !important;
+}
+
+.leaderboard-tabs button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+}
+
+.leader-row b {
+  font-size: 13px !important;
+}
+
+.leader-row small {
+  font-size: 11.5px !important;
+}
+
+.leader-row strong {
+  font: 500 12px 'DM Mono', monospace !important;
+}
+
+/* Club Dashboard (SRS) */
+.club-engine-cover > small {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.club-engine-cover button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+}
+
+.engine-sections {
+  font: 500 11.5px 'DM Mono', monospace !important;
+}
+
+.dashboard-tool p {
+  font-size: 12.5px !important;
+  line-height: 1.5;
+}
+
+.dashboard-tool button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+}
+
+/* Modals & Notifications */
+.ticket-modal > p:not(.eyebrow) {
+  font-size: 13.5px !important;
+  line-height: 1.6;
+}
+
+.ticket-stub > span,
+.ticket-stub > small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.modal-done,
+.ticket-modal form button {
+  font: 600 11.5px 'DM Mono', monospace !important;
+  padding: 12px !important;
+}
+
+.toast {
+  font-size: 13px !important;
+}
+
+.notif-item {
+  font-size: 12.5px !important;
+}
+
+.notif-item b {
+  font-size: 13px !important;
+}
+
+.notif-item small {
+  font: 500 11px 'DM Mono', monospace !important;
+}
+
+.cart-item {
+  font-size: 12.5px !important;
+}
+
+
+/* ===================================================================   LOGIN HERO & ILLUSTRATION FIX
+   Separates story copy from the bottom landscape hills to prevent overlap.
+   ========================================================================== */
+
+.login-story {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 34px 5vw 28px !important;
+  background: #25392d;
+  color: #f8f5e9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.login-story-copy {
+  position: relative;
+  z-index: 10 !important;
+  margin: auto 0 !important;
+  max-width: 520px;
+}
+
+.login-story-copy h1 {
+  margin: 12px 0 16px !important;
+  font: 500 clamp(44px, 5.5vw, 76px)/1.02 'Fraunces', serif !important;
+  letter-spacing: -2.5px;
+  color: #fbf9f1;
+}
+
+.login-story-copy h1 em {
+  color: #c4d7b8 !important;
+  font-style: italic;
+}
+
+.login-story-copy > p:last-of-type {
+  max-width: 420px;
+  color: #c7d2c3 !important;
+  font-size: 14.5px !important;
+  line-height: 1.65;
+  margin: 0 !important;
+}
+
+.login-story-art {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 170px !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  overflow: hidden;
+}
+
+.login-hill {
+  position: absolute !important;
+  inset: 45px -10% 0 !important;
+  border-radius: 50% 50% 0 0 !important;
+  background: #3e5d44 !important;
+}
+
+.login-hill:after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 55px 12% 0 !important;
+  border-radius: 60% 50% 0 0 !important;
+  background: #5d744f !important;
+}
+
+.login-sun {
+  position: absolute !important;
+  right: 22% !important;
+  top: 15px !important;
+  z-index: 2 !important;
+  color: #f0bd79 !important;
+  font: 64px 'Patrick Hand', cursive !important;
+}
+
+.login-flower {
+  position: absolute !important;
+  z-index: 3 !important;
+  left: 18% !important;
+  top: 25px !important;
+  color: #f4e2b7 !important;
+  font-size: 56px !important;
+}
+
+.login-doodle {
+  position: absolute !important;
+  z-index: 4 !important;
+  right: 12% !important;
+  top: 65px !important;
+  color: #fff4dc !important;
+  font: 17px/1.2 'Patrick Hand', cursive !important;
+  rotate: 7deg;
+}
+
+.login-story > footer {
+  position: relative !important;
+  z-index: 10 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  color: #aebda8 !important;
+  font: 500 11px 'DM Mono', monospace !important;
+  letter-spacing: 0.6px;
+  margin-top: auto !important;
+}

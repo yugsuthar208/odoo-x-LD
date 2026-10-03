@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { EventItem, Section } from "../../lib/supabase/types";
+import type { CampusRole, EventItem, Section } from "../../lib/supabase/types";
 
 interface EventsModuleProps {
   events: EventItem[];
@@ -19,6 +19,7 @@ interface EventsModuleProps {
   handleCheckIn: (title: string) => void;
   setSection: (s: Section) => void;
   notify: (msg: string) => void;
+  role?: CampusRole;
 }
 
 export function EventsModule({
@@ -37,18 +38,32 @@ export function EventsModule({
   handleCheckIn,
   setSection,
   notify,
+  role = "Student",
 }: EventsModuleProps) {
+  const isCouncil = role === "Student Council";
+  const isClubLeader = role === "Club Leader";
+
   return (
     <>
       <div className="page-heading events-heading">
         <div>
-          <p className="eyebrow">GOOD PLANS, GOOD PEOPLE</p>
+          <p className="eyebrow">
+            {isCouncil
+              ? "STUDENT COUNCIL · CAMPUS PROGRAMMING"
+              : isClubLeader
+              ? "CLUB EVENTS & WORKSHOP OPERATIONS"
+              : "GOOD PLANS, GOOD PEOPLE"}
+          </p>
           <h1>
             Make room for
             <br />
             <em>something memorable.</em>
           </h1>
-          <p className="welcome-copy">Workshops, little adventures, and the things that bring us together.</p>
+          <p className="welcome-copy">
+            {canManage
+              ? "Publish official campus events, manage ticketing capacity, and supervise entrance check-ins."
+              : "Workshops, little adventures, and the things that bring us together."}
+          </p>
         </div>
         <div className="heading-sticker yellow-bg">
           SAVE
@@ -58,12 +73,17 @@ export function EventsModule({
           SEAT <span>↘</span>
         </div>
       </div>
+
       <div className="events-toolbar">
         <div>
-          <span className="live-dot" /> OCTOBER ON CAMPUS <span className="toolbar-divider">·</span> {events.length} THINGS TO DO
+          <span className="live-dot" /> OCTOBER ON CAMPUS <span className="toolbar-divider">·</span>{" "}
+          {events.length} THINGS TO DO
         </div>
-        <button onClick={() => notify("Viewing all active events for this semester.")}>ALL EVENTS ⌄</button>
+        <button onClick={() => notify("Viewing all active events for this semester.")}>
+          ALL EVENTS ⌄
+        </button>
       </div>
+
       {canManage && (
         <form
           className="inline-create"
@@ -75,27 +95,43 @@ export function EventsModule({
           <input
             value={formText}
             onChange={(e) => setFormText(e.target.value)}
-            placeholder="Propose a campus event…"
+            placeholder={
+              isCouncil
+                ? "Propose campus-wide council event (e.g. Townhall, Cultural Night)…"
+                : isClubLeader
+                ? "Create club event / workshop (e.g. Design Hackathon)…"
+                : "Propose a campus event…"
+            }
             required
+            style={{ flex: 2 }}
           />
           <input
             value={formExtra}
             onChange={(e) => setFormExtra(e.target.value)}
-            placeholder="Organizing club (e.g. Design Society)"
+            placeholder={
+              isCouncil
+                ? "Host: Student Council"
+                : isClubLeader
+                ? "Host: Design Society"
+                : "Organizing club"
+            }
+            style={{ flex: 1 }}
           />
           <input
             value={formExtra2}
             onChange={(e) => setFormExtra2(e.target.value)}
-            placeholder="Day of month (e.g. 28)"
-            style={{ maxWidth: 100 }}
+            placeholder="Day (e.g. 28)"
+            style={{ maxWidth: 90 }}
           />
           <button type="submit">ADD EVENT +</button>
         </form>
       )}
+
       <div className="full-event-list">
         {events.map((event) => {
           const hasTicket = tickets.includes(event.title);
           const isChecked = checkedIn.includes(event.title);
+
           return (
             <article className="full-event" key={event.title}>
               <div className={`big-date ${event.color}`}>
@@ -118,26 +154,50 @@ export function EventsModule({
                     <i>SR</i>
                   </div>
                   <span>
-                    {event.going} people are going
+                    {event.going} people are registered
                     {hasTicket && " · YOUR TICKET SAVED"}
-                    {isChecked && " · CHECKED IN ✓"}
+                    {isChecked && " · ENTRY VALIDATED ✓"}
                   </span>
                 </div>
               </div>
               <div className="event-actions">
+                {/* Student Ticketing View */}
                 <button className="ticket-button" onClick={() => handleTicketClick(event)}>
-                  {hasTicket ? "VIEW TICKET & QR" : "GET YOUR TICKET"} <span>↗</span>
+                  {hasTicket ? "VIEW TICKET & PASS" : "GET YOUR TICKET"} <span>↗</span>
                 </button>
-                {hasTicket && (
-                  <button className="checkin-button" onClick={() => handleCheckIn(event.title)}>
-                    {isChecked ? "CHECKED IN ✓" : "SCAN DEMO QR ↗"}
+
+                {/* Organizer Entrance Management vs Student Status */}
+                {canManage ? (
+                  <button
+                    className="checkin-button"
+                    onClick={() => handleCheckIn(event.title)}
+                    title="Validate arriving student attendee"
+                  >
+                    {isChecked ? "GATE CHECK-IN VALID ✓" : "ENTRANCE CHECK-IN ↗"}
                   </button>
+                ) : (
+                  hasTicket && (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        padding: "6px 10px",
+                        borderRadius: 4,
+                        background: isChecked ? "#e6f4ea" : "#f1f3ed",
+                        color: isChecked ? "#137333" : "#556453",
+                        fontWeight: 600,
+                        alignSelf: "center",
+                      }}
+                    >
+                      {isChecked ? "CHECKED IN AT DOOR ✓" : "PASS READY FOR DOOR"}
+                    </span>
+                  )
                 )}
               </div>
             </article>
           );
         })}
       </div>
+
       <div className="event-footer-note">
         <span>✦</span> Plans change. Good memories stick.
         <button

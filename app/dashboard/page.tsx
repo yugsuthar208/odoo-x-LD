@@ -27,7 +27,9 @@ import { ModalProvider } from "../../components/modals/ModalProvider";
 
 // Module components
 import { OverviewModule } from "../../components/modules/OverviewModule";
-import { DiscoverClubsModule } from "../../components/modules/DiscoverClubsModule";
+import { ClubsModule } from "../../components/modules/ClubsModule";
+import { useClubWorkspace } from "../../lib/useClubWorkspace";
+import { campusClubs } from "../../lib/clubs";
 import { EventsModule } from "../../components/modules/EventsModule";
 import { VolunteersModule } from "../../components/modules/VolunteersModule";
 import { TasksModule } from "../../components/modules/TasksModule";
@@ -35,22 +37,20 @@ import { MarketplaceModule } from "../../components/modules/MarketplaceModule";
 import { MessagesModule } from "../../components/modules/MessagesModule";
 import { HelpDeskModule } from "../../components/modules/HelpDeskModule";
 import { FinanceModule } from "../../components/modules/FinanceModule";
+import { GovernanceModule } from "../../components/modules/GovernanceModule";
+import { canReview } from "../../lib/governance";
 import { CouncilModule } from "../../components/modules/CouncilModule";
 import { ElectionsModule } from "../../components/modules/ElectionsModule";
 import { AdministrationModule } from "../../components/modules/AdministrationModule";
 import { CollegePortalModule } from "../../components/modules/CollegePortalModule";
-import { MembershipModule } from "../../components/modules/MembershipModule";
 import { AnnouncementsModule } from "../../components/modules/AnnouncementsModule";
 import { ClubShopModule } from "../../components/modules/ClubShopModule";
 import { AchievementsModule } from "../../components/modules/AchievementsModule";
-import { ClubDashboardModule } from "../../components/modules/ClubDashboardModule";
 
-const initialClubs: Club[] = [
-  { name: "Design Society", category: "CREATIVE", members: "248 members", color: "lilac", icon: "🎨", description: "A home for curious minds, visual thinkers and makers who love turning ideas into something real.", next: "Poster Jam · Fri, 4:30 PM" },
-  { name: "Robotics & AI", category: "TECHNOLOGY", members: "186 members", color: "mint", icon: "⌘", description: "Build intelligent machines, learn by doing and find a team for the next big challenge.", next: "Open Lab · Sat, 11:00 AM" },
-  { name: "The Green Collective", category: "COMMUNITY", members: "312 members", color: "yellow", icon: "♧", description: "Small campus changes add up. Join hands on sustainability, gardens and cleaner spaces.", next: "Campus Garden · Sun, 9:00 AM" },
-  { name: "Frame by Frame", category: "CULTURE", members: "124 members", color: "pink", icon: "◉", description: "For the people who see a story everywhere. Shoot, edit, screen and share together.", next: "Short Film Night · Tue, 6:00 PM" },
-];
+const initialClubs: Club[] = campusClubs.map((club) => ({
+  name: club.name, category: club.category, members: "Open for applications", color: "mint",
+  icon: club.icon, description: club.description, next: "Open the club page for details",
+}));
 
 const initialEvents: EventItem[] = [
   { title: "Build Night: Make it matter", club: "Robotics & AI", date: "18", month: "OCT", time: "5:30 PM", place: "Innovation Lab", type: "WORKSHOP", color: "mint", going: 42 },
@@ -59,11 +59,31 @@ const initialEvents: EventItem[] = [
 ];
 
 export default function Home() {
-  const [section, setSection] = useState<Section>("Overview");
+  const [section, setRawSection] = useState<Section>("Overview");
+  const [selectedClub, setSelectedClub] = useState<string | null>(null);
+  const setSection = (next: Section) => {
+    setSelectedClub(null);
+    setRawSection(next);
+    window.history.replaceState(null, "", "/dashboard");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+  const openClub = (id: string | null) => {
+    setSelectedClub(id);
+    window.history.pushState(null, "", id ? `/dashboard?club=${encodeURIComponent(id)}` : "/dashboard");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+  useEffect(() => {
+    const readClub = () => {
+      const id = new URLSearchParams(window.location.search).get("club");
+      setSelectedClub(id);
+      if (id) setRawSection("Discover clubs");
+    };
+    readClub();
+    window.addEventListener("popstate", readClub);
+    return () => window.removeEventListener("popstate", readClub);
+  }, []);
   const [clubs, setClubs] = useState<Club[]>(initialClubs);
   const [events, setEvents] = useState<EventItem[]>(initialEvents);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("ALL CLUBS");
   const [toast, setToast] = useState("");
   const [modal, setModal] = useState<ModalState>(null);
   const [volunteerTab, setVolunteerTab] = useState("Opportunities");
@@ -92,11 +112,6 @@ export default function Home() {
     { channel: "Robotics & AI", author: "Robotics & AI", text: "Open lab is on Saturday morning at 11 AM." },
   ]);
   const [activeChannel, setActiveChannel] = useState("Student Council");
-  const [memberships, setMemberships] = useState<MembershipItem[]>([
-    { club: "Design Society", status: "ACTIVE", dues: "Paid until Jun 2027", color: "lilac", icon: "🎨" },
-    { club: "Robotics & AI", status: "RENEW SOON", dues: "Expires in 18 days", color: "mint", icon: "⌘" },
-    { club: "The Green Collective", status: "PENDING", dues: "Dues: ₹250", color: "yellow", icon: "♧" },
-  ]);
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([
     { title: "Welcome week is looking good.", audience: "ALL STUDENTS", date: "Today · Student Council", body: "Find your people, find your rhythm and make a little room for something new." },
     { title: "Poster Jam sign-ups are open", audience: "DESIGN SOCIETY", date: "Yesterday · Design Society", body: "Bring a sketch, a friend or just your curiosity. Materials are waiting in Studio 2." },
@@ -108,12 +123,6 @@ export default function Home() {
     { name: "Green Collective tote", club: "The Green Collective", price: 280, stock: 3, variant: "One size", color: "yellow", emoji: "♧" },
   ]);
   const [cart, setCart] = useState<Array<{ name: string; club: string; price: number; qty: number }>>([]);
-  const [financeEntries, setFinanceEntries] = useState<FinanceEntry[]>([
-    { what: "Workshop ticket sales", club: "Robotics & AI", date: "Oct 10", amt: "+ ₹ 12,400", type: "in" },
-    { what: "Materials · build night", club: "Robotics & AI", date: "Oct 09", amt: "− ₹ 4,850", type: "out" },
-    { what: "Market stall fees", club: "Design Society", date: "Oct 07", amt: "+ ₹ 8,000", type: "in" },
-    { what: "Garden supplies", club: "Green Collective", date: "Oct 05", amt: "− ₹ 2,150", type: "out" },
-  ]);
   const [councilIdeas, setCouncilIdeas] = useState<Array<{ title: string; cat: string; meta: string; votes: number; supported: boolean; color: string; icon: string }>>([
     { title: "More covered seating by the library?", cat: "CAMPUS SPACES", meta: "In review", votes: 23, supported: false, color: "lilac", icon: "⌂" },
     { title: "Can clubs share an equipment library?", cat: "STUDENT LIFE", meta: "Gathering support", votes: 17, supported: false, color: "mint", icon: "⇄" },
@@ -127,10 +136,21 @@ export default function Home() {
   const [theme, setTheme] = useState("forest");
   const [leaderboard, setLeaderboard] = useState("VOLUNTEERS");
   const [shopFilter, setShopFilter] = useState("ALL");
+  const roleProfiles: Record<CampusRole, { name: string; avatar: string }> = useMemo(
+    () => ({
+      Student: { name: "Aarav Sharma · Student", avatar: "AS" },
+      "Club Leader": { name: "Maya Patel · Design Society Lead", avatar: "MP" },
+      Faculty: { name: "Dr. Sunita Sen · Faculty Advisor", avatar: "SS" },
+      "Student Council": { name: "Ananya Rao · Council President", avatar: "AR" },
+      Admin: { name: "Vikram Malhotra · Campus Admin", avatar: "VM" },
+    }),
+    []
+  );
+
   const [notifOpen, setNotifOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [role, setRole] = useState<CampusRole>("Student");
-  const [displayName, setDisplayName] = useState("Campus member");
+  const [displayName, setDisplayName] = useState("Aarav Sharma · Student");
   const [profileId, setProfileId] = useState("preview");
   const [isPreview, setIsPreview] = useState(true);
   const [authPending, setAuthPending] = useState(true);
@@ -142,6 +162,9 @@ export default function Home() {
   const [announcementAudience, setAnnouncementAudience] = useState("All students");
   const [adminSearch, setAdminSearch] = useState("");
 
+  const clubWorkspace = useClubWorkspace(!authPending, isPreview, profileId, role, displayName);
+  const joinedMemberships: MembershipItem[] = campusClubs.filter((club) => clubWorkspace.status(club.id) === "approved").map((club) => ({ club: club.name, status: "ACTIVE", dues: "Approved member", color: "mint", icon: club.icon }));
+
   const notify = (message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(""), 3200);
@@ -150,10 +173,12 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
     const hydrate = async () => {
-      const supabase = getSupabase();
       let key = "preview";
       let remoteRecords: Array<{ id: string; kind: string; payload: Record<string, unknown>; created_by: string }> = [];
-      const preview = typeof window !== "undefined" ? window.localStorage.getItem("campus-commons-preview-role") : null;
+      const storedPreview = window.localStorage.getItem("campus-commons-preview-role");
+      const preview = storedPreview && Object.hasOwn(roleProfiles, storedPreview) ? storedPreview : null;
+      // Explicit preview mode must not wait for the hosted auth service.
+      const supabase = preview ? null : getSupabase();
 
       if (supabase) {
         try {
@@ -183,7 +208,7 @@ export default function Home() {
             key = `preview:${preview}`;
             if (!cancelled) {
               setRole(preview as CampusRole);
-              setDisplayName("Maya Patel · Preview");
+              setDisplayName(roleProfiles[preview as CampusRole]?.name || "Aarav Sharma · Student");
               setProfileId(key);
               setIsPreview(true);
             }
@@ -196,7 +221,7 @@ export default function Home() {
             key = `preview:${preview}`;
             if (!cancelled) {
               setRole(preview as CampusRole);
-              setDisplayName("Maya Patel · Preview");
+              setDisplayName(roleProfiles[preview as CampusRole]?.name || "Aarav Sharma · Student");
               setProfileId(key);
               setIsPreview(true);
             }
@@ -213,7 +238,7 @@ export default function Home() {
         key = `preview:${preview}`;
         if (!cancelled) {
           setRole(preview as CampusRole);
-          setDisplayName("Maya Patel · Preview");
+          setDisplayName(roleProfiles[preview as CampusRole]?.name || "Aarav Sharma · Student");
           setProfileId(key);
           setIsPreview(true);
         }
@@ -225,7 +250,7 @@ export default function Home() {
       if (saved) {
         try {
           const data = JSON.parse(saved);
-          if (data.clubs) setClubs(data.clubs);
+
           if (data.events) setEvents(data.events);
           if (data.tickets) setTickets(data.tickets);
           if (data.checkedIn) setCheckedIn(data.checkedIn);
@@ -234,11 +259,9 @@ export default function Home() {
           if (data.issues) setIssues(data.issues);
           if (data.products) setProducts(data.products);
           if (data.messages) setMessages(data.messages);
-          if (data.memberships) setMemberships(data.memberships);
           if (data.announcements) setAnnouncements(data.announcements);
           if (data.shopItems) setShopItems(data.shopItems);
           if (data.cart) setCart(data.cart);
-          if (data.financeEntries) setFinanceEntries(data.financeEntries);
           if (data.councilIdeas) setCouncilIdeas(data.councilIdeas);
           if (data.theme) setTheme(data.theme);
         } catch {
@@ -259,8 +282,6 @@ export default function Home() {
         setTickets(remoteRecords.filter((row) => row.kind === "ticket" && row.created_by === key).map((row) => String(row.payload.title)));
         setCheckedIn(remoteRecords.filter((row) => row.kind === "checkin" && row.created_by === key).map((row) => String(row.payload.title)));
         setCommitments(remoteRecords.filter((row) => row.kind === "volunteer_application" && row.created_by === key).map((row) => String(row.payload.title)));
-        const joined = new Set(remoteRecords.filter((row) => row.kind === "membership" && row.created_by === key).map((row) => String(row.payload.title)));
-        if (joined.size) setClubs((current) => current.map((club) => (joined.has(club.name.replace(/^✓ /, "")) ? { ...club, name: `✓ ${club.name.replace(/^✓ /, "")}` } : club)));
         setTickets((current) => [...new Set([...current, ...remoteRecords.filter((row) => row.kind === "vote" && row.created_by === key).map((row) => `VOTE:${String(row.payload.position)}`)])]);
       }
       setLoaded(true);
@@ -277,9 +298,9 @@ export default function Home() {
     if (!loaded) return;
     window.localStorage.setItem(
       `campus-commons-demo-v1:${profileId}`,
-      JSON.stringify({ clubs, events, tickets, checkedIn, commitments, tasks, issues, products, messages, memberships, announcements, shopItems, cart, financeEntries, councilIdeas, theme })
+      JSON.stringify({ clubs, events, tickets, checkedIn, commitments, tasks, issues, products, messages, announcements, shopItems, cart, councilIdeas, theme })
     );
-  }, [loaded, profileId, clubs, events, tickets, checkedIn, commitments, tasks, issues, products, messages, memberships, announcements, shopItems, cart, financeEntries, councilIdeas, theme]);
+  }, [loaded, profileId, clubs, events, tickets, checkedIn, commitments, tasks, issues, products, messages, announcements, shopItems, cart, councilIdeas, theme]);
 
   const recordActivity = async (kind: string, payload: Record<string, unknown>) => {
     const supabase = getSupabase();
@@ -297,9 +318,11 @@ export default function Home() {
 
   const switchPreviewRole = (newRole: CampusRole) => {
     setRole(newRole);
+    const profile = roleProfiles[newRole];
+    setDisplayName(profile.name);
     window.localStorage.setItem("campus-commons-preview-role", newRole);
     setProfileId(`preview:${newRole}`);
-    notify(`Switched preview mode to: ${newRole}`);
+    notify(`Switched workspace to: ${newRole} (${profile.name})`);
   };
 
   const signOut = async () => {
@@ -311,49 +334,16 @@ export default function Home() {
     window.location.replace("/login");
   };
 
-  const filteredClubs = useMemo(() => {
-    return clubs.filter(
-      (club) =>
-        (filter === "ALL CLUBS" || club.category === filter) &&
-        `${club.name} ${club.category} ${club.description}`.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [clubs, filter, search]);
-
-  const canCreateEvents = ["Club Leader", "Faculty", "Student Council", "Admin"].includes(role);
-  const canManageTasks = ["Club Leader", "Faculty", "Student Council", "Admin"].includes(role);
+  const canCreateEvents = role === "Admin";
+  const canManageTasks = role === "Admin" || role === "Student Council";
   const canListMarketplace = ["Student", "Club Leader", "Student Council", "Admin"].includes(role);
   const canModerateIssues = ["Faculty", "Student Council", "Admin"].includes(role);
-  const canManageFinance = ["Club Leader", "Faculty", "Student Council", "Admin"].includes(role);
-  const canPublishAnnouncements = role !== "Student";
+  const canPublishAnnouncements = role === "Admin" || role === "Student Council";
   const canAdminister = role === "Admin";
   const canManage = canCreateEvents;
 
   const totalVolunteerHours = 8 + commitments.length * 3;
   const totalPoints = 120 + commitments.length * 40 + tickets.length * 20;
-
-  const totalBalanceNumber = useMemo(() => {
-    return financeEntries.reduce((sum, item) => {
-      const num = parseInt(item.amt.replace(/[^0-9]/g, ""), 10) || 0;
-      return item.type === "in" ? sum + num : sum - num;
-    }, 248650);
-  }, [financeEntries]);
-
-  const toggleJoinClub = (name: string) => {
-    const isJoined = clubs.some((c) => c.name === `✓ ${name}`);
-    if (isJoined) {
-      setClubs((current) => current.map((c) => (c.name === `✓ ${name}` ? { ...c, name } : c)));
-      setMemberships((current) => current.filter((m) => m.club !== name));
-      notify(`You left ${name}.`);
-    } else {
-      setClubs((current) => current.map((c) => (c.name === name ? { ...c, name: `✓ ${name}` } : c)));
-      setMemberships((current) => [
-        ...current.filter((m) => m.club !== name),
-        { club: name, status: "ACTIVE", dues: "Paid until Jun 2027", color: "mint", icon: "✦" },
-      ]);
-      void recordActivity("membership", { title: name });
-      notify(`You're in! ${name} added to your active memberships.`);
-    }
-  };
 
   const handleTicketClick = (event: EventItem) => {
     if (tickets.includes(event.title)) {
@@ -374,7 +364,7 @@ export default function Home() {
     }
     setCheckedIn((cur) => [...cur, title]);
     void recordActivity("checkin", { title });
-    notify("Demo QR validated! You are officially checked in.");
+    notify("Entrance check-in validated! Attendee marked present.");
   };
 
   const handleVolunteerApply = (opp: VolunteerOpportunity) => {
@@ -390,20 +380,27 @@ export default function Home() {
     notify(`You're confirmed for “${opp.title}”! +40 points earned.`);
   };
 
+  const onPostOpportunity = (opp: VolunteerOpportunity) => {
+    setVolunteerOpportunities((cur) => [opp, ...cur]);
+    void recordActivity("volunteer_application", { title: opp.title, role: "organizer_post" });
+    notify(`Volunteer drive “${opp.title}” published across campus!`);
+  };
+
   const submitInline = (kind: Section) => {
     const text = formText.trim();
     if (!text) return;
 
     if (kind === "Events") {
+      const defaultHost = role === "Student Council" ? "Student Council" : "Design Society";
       const newEv: EventItem = {
         title: text,
-        club: formExtra || "Student Council",
+        club: formExtra || defaultHost,
         date: formExtra2 || "30",
         month: "OCT",
         time: "4:00 PM",
         place: "Student Commons",
         type: "CAMPUS EVENT",
-        color: "mint",
+        color: role === "Student Council" ? "lilac" : "mint",
         going: 1,
       };
       setEvents((cur) => [newEv, ...cur]);
@@ -412,7 +409,8 @@ export default function Home() {
     }
 
     if (kind === "Tasks") {
-      const newTask: TaskItem = { title: text, team: formExtra || "Student Council", done: false };
+      const defaultTeam = role === "Student Council" ? "Student Council" : "Design Society";
+      const newTask: TaskItem = { title: text, team: formExtra || defaultTeam, done: false };
       setTasks((cur) => [newTask, ...cur]);
       void recordActivity("task", newTask as unknown as Record<string, unknown>);
       notify(`Task added to team board.`);
@@ -420,10 +418,22 @@ export default function Home() {
 
     if (kind === "Help desk") {
       const ticketNum = `CC-${String(2400 + issues.length + 1)}`;
-      const newIssue: IssueItem = { id: ticketNum, title: text, category: (formExtra || "CAMPUS LIFE").toUpperCase(), status: "Open", votes: 1 };
+      const isCouncilOrAdmin = role === "Student Council" || role === "Admin" || role === "Faculty";
+      const newIssue: IssueItem = {
+        id: ticketNum,
+        title: text,
+        category: (formExtra || (isCouncilOrAdmin ? "STUDENT WELFARE" : "CAMPUS LIFE")).toUpperCase(),
+        status: isCouncilOrAdmin ? "Assigned" : "Open",
+        votes: 1,
+        submittedBy: displayName,
+      };
       setIssues((cur) => [newIssue, ...cur]);
       void recordActivity("issue", newIssue as unknown as Record<string, unknown>);
-      notify(`Issue ${ticketNum} submitted to Student Council.`);
+      notify(
+        isCouncilOrAdmin
+          ? `Official council ticket ${ticketNum} logged.`
+          : `Issue ${ticketNum} submitted to Student Council.`
+      );
     }
 
     if (kind === "Marketplace") {
@@ -438,21 +448,6 @@ export default function Home() {
       const newMsg: MessageItem = { channel: activeChannel, author: displayName, text, time: "Just now" };
       setMessages((cur) => [...cur, newMsg]);
       void recordActivity("chat_message", newMsg as unknown as Record<string, unknown>);
-    }
-
-    if (kind === "Finance") {
-      const amtNum = Number(formExtra) || 1000;
-      const isIncome = formExtra2 === "in";
-      const newEntry: FinanceEntry = {
-        what: text,
-        club: "Student Council",
-        date: "Today",
-        amt: `${isIncome ? "+" : "−"} ₹ ${amtNum.toLocaleString("en-IN")}`,
-        type: isIncome ? "in" : "out",
-      };
-      setFinanceEntries((cur) => [newEntry, ...cur]);
-      void recordActivity("finance_entry", newEntry as unknown as Record<string, unknown>);
-      notify(`Finance record added: ${newEntry.amt}`);
     }
 
     setFormText("");
@@ -500,6 +495,19 @@ export default function Home() {
     notify(`Updated support for “${councilIdeas[index].title}”`);
   };
 
+  const cycleIdeaStatus = (index: number) => {
+    const statuses = ["Gathering support", "In review", "On Senate Agenda", "Adopted & Funded"];
+    setCouncilIdeas((cur) =>
+      cur.map((it, i) => {
+        if (i !== index) return it;
+        const curIdx = statuses.indexOf(it.meta);
+        const nextIdx = (curIdx + 1) % statuses.length;
+        return { ...it, meta: statuses[nextIdx] };
+      })
+    );
+    notify("Proposal status updated on Council agenda.");
+  };
+
   const publishAnnouncement = () => {
     const body = announcementText.trim();
     if (!body) return;
@@ -531,14 +539,6 @@ export default function Home() {
     notify(`Added ${item.name} to order.`);
   };
 
-  const handlePayDues = (clubName: string) => {
-    setMemberships((cur) =>
-      cur.map((m) => (m.club === clubName ? { ...m, status: "ACTIVE", dues: "Paid until Jun 2027" } : m))
-    );
-    void recordActivity("membership", { club: clubName, dues: "Paid until Jun 2027" });
-    notify(`Dues for ${clubName} received! Your benefits are active.`);
-  };
-
   const askAboutProduct = (product: ProductItem) => {
     setActiveChannel(product.seller.includes("Society") ? "Design Society" : product.seller.includes("Robotics") ? "Robotics & AI" : "Student Council");
     setSection("Messages");
@@ -564,10 +564,10 @@ export default function Home() {
       <Sidebar
         section={section}
         setSection={setSection}
-        setSearch={setSearch}
         role={role}
         displayName={displayName}
         signOut={signOut}
+        approvalCount={clubWorkspace.data.requests.filter((r) => canReview(clubWorkspace.actor, r) || role === "Student Council" && r.status === "approved_funding").length}
         eventCount={events.length}
       />
 
@@ -581,6 +581,9 @@ export default function Home() {
           notifOpen={notifOpen}
           setNotifOpen={setNotifOpen}
           signOut={signOut}
+          autoAccept={clubWorkspace.data.autoAccept}
+          setAutoAccept={(enabled) => void clubWorkspace.setAutoAccept(enabled)}
+          clubsBusy={clubWorkspace.loading || clubWorkspace.busy}
         />
 
         {notifOpen && (
@@ -603,26 +606,18 @@ export default function Home() {
                 setSection={setSection}
                 events={events}
                 handleTicketClick={handleTicketClick}
-                memberships={memberships}
+                memberships={joinedMemberships}
                 commitments={commitments}
                 notify={notify}
               />
             )}
 
-            {section === "Discover clubs" && (
-              <DiscoverClubsModule
-                search={search}
-                setSearch={setSearch}
-                filter={filter}
-                setFilter={setFilter}
-                filteredClubs={filteredClubs}
-                toggleJoinClub={toggleJoinClub}
-                setModal={setModal}
-              />
+            {(section === "Discover clubs" || section === "My Clubs") && (
+              <ClubsModule key={`${section}:${selectedClub}:${role}`} workspace={clubWorkspace} selectedClub={selectedClub} openClub={openClub} view={section} role={role} />
             )}
 
             {section === "Events" && (
-              <EventsModule
+              ["Club Leader", "Faculty"].includes(role) ? <GovernanceModule key={role} workspace={clubWorkspace} /> : <EventsModule
                 events={events}
                 canManage={canManage}
                 formText={formText}
@@ -638,11 +633,12 @@ export default function Home() {
                 handleCheckIn={handleCheckIn}
                 setSection={setSection}
                 notify={notify}
+                role={role}
               />
             )}
 
             {section === "Volunteers" && (
-              <VolunteersModule
+              ["Club Leader", "Faculty"].includes(role) ? <GovernanceModule key={role} workspace={clubWorkspace} /> : <VolunteersModule
                 totalVolunteerHours={totalVolunteerHours}
                 totalPoints={totalPoints}
                 volunteerTab={volunteerTab}
@@ -650,11 +646,13 @@ export default function Home() {
                 volunteerOpportunities={volunteerOpportunities}
                 commitments={commitments}
                 handleVolunteerApply={handleVolunteerApply}
+                role={role}
+                onPostOpportunity={onPostOpportunity}
               />
             )}
 
             {section === "Tasks" && (
-              <TasksModule
+              ["Club Leader", "Faculty"].includes(role) ? <GovernanceModule key={role} workspace={clubWorkspace} /> : <TasksModule
                 tasks={tasks}
                 setTasks={setTasks}
                 canManageTasks={canManageTasks}
@@ -663,6 +661,7 @@ export default function Home() {
                 formExtra={formExtra}
                 setFormExtra={setFormExtra}
                 submitInline={submitInline}
+                role={role}
               />
             )}
 
@@ -704,24 +703,13 @@ export default function Home() {
                 cycleIssueStatus={cycleIssueStatus}
                 upvoteIssue={upvoteIssue}
                 deleteIssue={deleteIssue}
+                role={role}
+                displayName={displayName}
               />
             )}
 
-            {section === "Finance" && (
-              <FinanceModule
-                totalBalanceNumber={totalBalanceNumber}
-                canManageFinance={canManageFinance}
-                formText={formText}
-                setFormText={setFormText}
-                formExtra={formExtra}
-                setFormExtra={setFormExtra}
-                formExtra2={formExtra2}
-                setFormExtra2={setFormExtra2}
-                submitInline={submitInline}
-                financeEntries={financeEntries}
-                setSection={setSection}
-                notify={notify}
-              />
+            {(section === "Finance" || section === "Approvals") && (
+              section === "Finance" ? <FinanceModule key={role} workspace={clubWorkspace} /> : <GovernanceModule key={role} workspace={clubWorkspace} />
             )}
 
             {section === "Council" && (
@@ -730,6 +718,8 @@ export default function Home() {
                 setModal={setModal}
                 councilIdeas={councilIdeas}
                 supportCouncilIdea={supportCouncilIdea}
+                role={role}
+                cycleIdeaStatus={cycleIdeaStatus}
               />
             )}
 
@@ -767,16 +757,11 @@ export default function Home() {
             )}
 
             {section === "Membership" && (
-              <MembershipModule
-                memberships={memberships}
-                setModal={setModal}
-                handlePayDues={handlePayDues}
-                notify={notify}
-              />
+              <ClubsModule key={`memberships:${selectedClub}:${role}`} workspace={clubWorkspace} selectedClub={selectedClub} openClub={openClub} view="My Clubs" role={role} />
             )}
 
             {section === "Announcements" && (
-              <AnnouncementsModule
+              ["Club Leader", "Faculty"].includes(role) ? <GovernanceModule key={role} workspace={clubWorkspace} /> : <AnnouncementsModule
                 announcements={announcements}
                 canPublishAnnouncements={canPublishAnnouncements}
                 announcementText={announcementText}
@@ -804,7 +789,7 @@ export default function Home() {
             {section === "Achievements" && (
               <AchievementsModule
                 displayName={displayName}
-                memberships={memberships}
+                memberships={joinedMemberships}
                 totalPoints={totalPoints}
                 totalVolunteerHours={totalVolunteerHours}
                 tickets={tickets}
@@ -817,17 +802,7 @@ export default function Home() {
             )}
 
             {section === "Club dashboard" && (
-              <ClubDashboardModule
-                theme={theme}
-                setTheme={setTheme}
-                clubs={clubs}
-                events={events}
-                tasks={tasks}
-                totalBalanceNumber={totalBalanceNumber}
-                setModal={setModal}
-                setSection={setSection}
-                notify={notify}
-              />
+              <GovernanceModule key={role} workspace={clubWorkspace} />
             )}
           </div>
         )}

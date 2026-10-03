@@ -1,13 +1,23 @@
 "use client";
 
 import React from "react";
-import type { ModalState, Section } from "../../lib/supabase/types";
+import type { CampusRole, ModalState, Section } from "../../lib/supabase/types";
 
 interface CouncilModuleProps {
   setSection: (s: Section) => void;
   setModal: (m: ModalState) => void;
-  councilIdeas: Array<{ title: string; cat: string; meta: string; votes: number; supported: boolean; color: string; icon: string }>;
+  councilIdeas: Array<{
+    title: string;
+    cat: string;
+    meta: string;
+    votes: number;
+    supported: boolean;
+    color: string;
+    icon: string;
+  }>;
   supportCouncilIdea: (i: number) => void;
+  role?: CampusRole;
+  cycleIdeaStatus?: (i: number) => void;
 }
 
 export function CouncilModule({
@@ -15,18 +25,46 @@ export function CouncilModule({
   setModal,
   councilIdeas,
   supportCouncilIdea,
+  role = "Student",
+  cycleIdeaStatus,
 }: CouncilModuleProps) {
+  const isCouncil = role === "Student Council";
+  const isAdminOrFaculty = role === "Admin" || role === "Faculty";
+  const isExecutive = isCouncil || isAdminOrFaculty;
+
   return (
     <>
       <div className="page-heading council-heading">
         <div>
-          <p className="eyebrow">LISTEN, LEARN, LEAD</p>
+          <p className="eyebrow">
+            {isCouncil
+              ? "STUDENT COUNCIL · EXECUTIVE CHAMBER"
+              : isAdminOrFaculty
+              ? "COUNCIL ADVISORY & SENATE LIAISON"
+              : "LISTEN, LEARN, LEAD"}
+          </p>
           <h1>
-            A better campus
-            <br />
-            is something <em>we make.</em>
+            {isCouncil ? (
+              <>
+                Campus Initiatives &amp;
+                <br />
+                <em>Senate Deliberations.</em>
+              </>
+            ) : (
+              <>
+                A better campus
+                <br />
+                is something <em>we make.</em>
+              </>
+            )}
           </h1>
-          <p className="welcome-copy">Your student council is here to help good ideas find their way forward.</p>
+          <p className="welcome-copy">
+            {isCouncil
+              ? "Your official workspace to advance student petitions, deliberate on campus policies, and manage resolutions."
+              : isAdminOrFaculty
+              ? "Faculty and administration oversight of Student Council initiatives, budgets, and campus policies."
+              : "Your student council is here to help good ideas find their way forward."}
+          </p>
         </div>
         <div className="council-seal">
           <span>✦</span>
@@ -39,38 +77,65 @@ export function CouncilModule({
           </small>
         </div>
       </div>
+
       <div className="council-banner">
         <div>
-          <p className="eyebrow">A NOTE FROM YOUR COUNCIL</p>
+          <p className="eyebrow">
+            {isCouncil ? "COUNCIL EXECUTIVE DIRECTIVE" : "A NOTE FROM YOUR COUNCIL"}
+          </p>
           <h2>
-            “The best ideas start by
-            <br />
-            making space to listen.”
+            {isCouncil
+              ? "“Turning student petitions into funded, real-world campus actions.”"
+              : "“The best ideas start by making space to listen.”"}
           </h2>
           <p>— Ananya Rao, Student President</p>
         </div>
         <span>✦</span>
-        <button onClick={() => setSection("Announcements")}>READ THE LATEST NOTE ↗</button>
+        <button
+          onClick={() => {
+            setSection("Announcements");
+          }}
+        >
+          {isCouncil ? "BROADCAST COUNCIL UPDATE ↗" : "READ THE LATEST NOTE ↗"}
+        </button>
       </div>
+
       <div className="council-grid">
         <div className="panel listening-panel">
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">YOUR VOICE BELONGS HERE</p>
-              <h2>On the campus mind.</h2>
+              <p className="eyebrow">
+                {isExecutive ? "SENATE INITIATIVES & STUDENT PETITIONS" : "YOUR VOICE BELONGS HERE"}
+              </p>
+              <h2>{isExecutive ? "Campus Proposals Pipeline" : "On the campus mind."}</h2>
             </div>
             <button className="text-link" onClick={() => setModal({ type: "share_idea" })}>
-              Share an idea ↗
+              {isExecutive ? "+ Sponsor New Proposal" : "Share an idea ↗"}
             </button>
           </div>
           {councilIdeas.map((it, i) => (
             <article className="voice-row" key={it.title}>
               <span className={`voice-icon ${it.color}`}>{it.icon}</span>
-              <div>
+              <div style={{ flex: 1 }}>
                 <small>{it.cat}</small>
                 <h3>{it.title}</h3>
                 <p>
-                  {it.votes} students · {it.meta}
+                  {it.votes} student supporters ·{" "}
+                  {isExecutive ? (
+                    <span
+                      style={{
+                        cursor: cycleIdeaStatus ? "pointer" : "default",
+                        textDecoration: cycleIdeaStatus ? "underline" : "none",
+                        fontWeight: 600,
+                      }}
+                      onClick={() => cycleIdeaStatus && cycleIdeaStatus(i)}
+                      title={cycleIdeaStatus ? "Click to advance status" : undefined}
+                    >
+                      Status: {it.meta} {cycleIdeaStatus ? "✎" : ""}
+                    </span>
+                  ) : (
+                    it.meta
+                  )}
                 </p>
               </div>
               <button
@@ -81,7 +146,7 @@ export function CouncilModule({
                 onClick={() => supportCouncilIdea(i)}
                 title="Support this proposal"
               >
-                ♡
+                ♡ {it.votes}
               </button>
             </article>
           ))}
@@ -103,15 +168,15 @@ export function CouncilModule({
             <button onClick={() => setModal({ type: "election_rules" })}>HOW ELECTIONS WORK ↗</button>
           </div>
           <div className="council-roles">
-            <span>YOUR COUNCIL</span>
+            <span>{isCouncil ? "YOUR EXECUTIVE BOARD" : "YOUR COUNCIL"}</span>
             <div>
               <i>AR</i> Ananya Rao <small>President</small>
             </div>
             <div>
-              <i>VS</i> Vikram Shah <small>Budget</small>
+              <i>VS</i> Vikram Shah <small>Budget &amp; Treasury</small>
             </div>
             <div>
-              <i>NK</i> Nisha Kapoor <small>Events</small>
+              <i>NK</i> Nisha Kapoor <small>Events &amp; Life</small>
             </div>
           </div>
         </aside>

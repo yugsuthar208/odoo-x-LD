@@ -4,6 +4,7 @@ export type Section =
   | "Overview"
   | "College portal"
   | "Discover clubs"
+  | "My Clubs"
   | "Events"
   | "Membership"
   | "Volunteers"
@@ -14,6 +15,7 @@ export type Section =
   | "Messages"
   | "Help desk"
   | "Finance"
+  | "Approvals"
   | "Announcements"
   | "Achievements"
   | "Council"
@@ -54,6 +56,9 @@ export type IssueItem = {
   category: string;
   status: string;
   votes: number;
+  assignedTo?: string;
+  submittedBy?: string;
+  resolutionNote?: string;
 };
 
 export type ProductItem = {

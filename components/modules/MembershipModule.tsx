@@ -2,13 +2,14 @@
 
 import React from "react";
 import { ModulePage } from "../ui/ModulePage";
-import type { MembershipItem, ModalState } from "../../lib/supabase/types";
+import type { CampusRole, MembershipItem, ModalState } from "../../lib/supabase/types";
 
 interface MembershipModuleProps {
   memberships: MembershipItem[];
   setModal: (m: ModalState) => void;
   handlePayDues: (clubName: string) => void;
   notify: (msg: string) => void;
+  role?: CampusRole;
 }
 
 export function MembershipModule({
@@ -16,31 +17,47 @@ export function MembershipModule({
   setModal,
   handlePayDues,
   notify,
+  role = "Student",
 }: MembershipModuleProps) {
+  const isLeaderOrCouncil = role === "Club Leader" || role === "Student Council" || role === "Admin";
   const activeCount = memberships.filter((m) => m.status === "ACTIVE").length;
 
   return (
     <ModulePage
-      eyebrow="YOUR CAMPUS CIRCLE"
+      eyebrow={
+        isLeaderOrCouncil
+          ? "CLUB MEMBERSHIP & ROSTER DIRECTORY"
+          : "YOUR CAMPUS CIRCLE"
+      }
       title={
         <>
-          Membership that
+          {isLeaderOrCouncil ? "Rosters that" : "Membership that"}
           <br />
-          <em>opens doors.</em>
+          <em>{isLeaderOrCouncil ? "build community." : "opens doors."}</em>
         </>
       }
-      subtitle="Keep track of dues, benefits and the clubs you want to grow with."
+      subtitle={
+        isLeaderOrCouncil
+          ? "Oversee enrolled club members, track collected dues, and verify active community privileges."
+          : "Keep track of dues, benefits and the clubs you want to grow with."
+      }
     >
       <div className="membership-hero">
         <div>
           <span className="membership-icon">♧</span>
-          <p className="eyebrow">YOUR MEMBERSHIP HEALTH</p>
+          <p className="eyebrow">
+            {isLeaderOrCouncil ? "CAMPUS CLUBS ENROLLMENT" : "YOUR MEMBERSHIP HEALTH"}
+          </p>
           <h2>{activeCount} active memberships</h2>
-          <p>Members get early access, member ticket pricing and a closer seat in the club community.</p>
+          <p>
+            {isLeaderOrCouncil
+              ? "Verified members receive event discounts, priority workshop registration, and voter eligibility."
+              : "Members get early access, member ticket pricing and a closer seat in the club community."}
+          </p>
         </div>
         <div className="membership-ring">
           <b>{String(activeCount).padStart(2, "0")}</b>
-          <small>ACTIVE</small>
+          <small>{isLeaderOrCouncil ? "ACTIVE" : "ENROLLED"}</small>
         </div>
       </div>
       <div className="membership-grid">
@@ -67,7 +84,9 @@ export function MembershipModule({
                   }
                 }}
               >
-                {item.status === "ACTIVE"
+                {isLeaderOrCouncil
+                  ? "VIEW ROSTER & BADGE ↗"
+                  : item.status === "ACTIVE"
                   ? "VIEW BENEFITS ↗"
                   : item.status === "RENEW SOON"
                   ? "RENEW DUES ₹250 ↗"

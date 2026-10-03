@@ -89,20 +89,21 @@ export function AdministrationModule({
               disabled={profile.id === profileId}
               onChange={async (event) => {
                 const nextRole = event.target.value as CampusRole;
-                setProfiles((current) =>
-                  current.map((item) => (item.id === profile.id ? { ...item, role: nextRole } : item))
-                );
                 const supabase = getSupabase();
                 if (supabase && !profile.id.startsWith("preview")) {
                   const { error } = await supabase
                     .from("profiles")
                     .update({ role: nextRole })
                     .eq("id", profile.id);
-                  if (error) notify(error.message);
-                  else notify(`${profile.full_name} is now a ${nextRole}.`);
+                  if (error) { notify(error.message); return; }
+                  notify(`${profile.full_name} is now a ${nextRole}.`);
                 } else {
                   notify(`${profile.full_name} will preview as ${nextRole}.`);
                 }
+                setProfiles((current) =>
+                  current.map((item) => (item.id === profile.id ? { ...item, role: nextRole } : item))
+                );
+
               }}
             >
               {["Student", "Club Leader", "Faculty", "Student Council", "Admin"].map((opt) => (
@@ -116,11 +117,11 @@ export function AdministrationModule({
         <span>STUDENT</span>
         <p>Explore, join, RSVP, volunteer, list, message, report and vote.</p>
         <span>OPERATORS</span>
-        <p>Club Leaders and Faculty can create events, manage tasks and oversee club work.</p>
+        <p>Club Leaders submit proposals. Assigned Faculty approves club operations and expenses.</p>
         <span>GOVERNANCE</span>
-        <p>Student Council manages issues, finance, elections and campus decisions.</p>
+        <p>Student Council holds the treasury and releases funding only after Admin authorization.</p>
         <span>ADMIN</span>
-        <p>Admins manage role access and the full shared workspace.</p>
+        <p>Admin is the highest authority, assigns club staff, authorizes funding, and can override faculty reviews.</p>
       </div>
     </ModulePage>
   );

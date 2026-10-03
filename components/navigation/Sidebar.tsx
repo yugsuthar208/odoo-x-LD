@@ -8,6 +8,7 @@ export const navItems: { name: Section; icon: string; badge?: string }[] = [
   { name: "Overview", icon: "◫" },
   { name: "College portal", icon: "⌂" },
   { name: "Discover clubs", icon: "◎" },
+  { name: "My Clubs", icon: "♧" },
   { name: "Events", icon: "▦", badge: "3" },
   { name: "Membership", icon: "♧" },
   { name: "Volunteers", icon: "♡" },
@@ -18,6 +19,7 @@ export const navItems: { name: Section; icon: string; badge?: string }[] = [
   { name: "Messages", icon: "↗" },
   { name: "Help desk", icon: "?" },
   { name: "Finance", icon: "₹" },
+  { name: "Approvals", icon: "✓" },
   { name: "Announcements", icon: "✉" },
   { name: "Achievements", icon: "✹" },
   { name: "Council", icon: "◎" },
@@ -30,21 +32,25 @@ export const roleSections: Record<CampusRole, Section[]> = {
     "Overview",
     "College portal",
     "Discover clubs",
+    "My Clubs",
     "Events",
     "Membership",
     "Volunteers",
+    "Tasks",
     "Marketplace",
     "Club shop",
     "Messages",
     "Help desk",
     "Announcements",
     "Achievements",
+    "Council",
     "Elections",
   ],
   "Club Leader": [
     "Overview",
     "College portal",
     "Discover clubs",
+    "My Clubs",
     "Events",
     "Membership",
     "Volunteers",
@@ -53,34 +59,43 @@ export const roleSections: Record<CampusRole, Section[]> = {
     "Club shop",
     "Marketplace",
     "Messages",
+    "Help desk",
     "Finance",
+    "Approvals",
     "Announcements",
     "Achievements",
+    "Council",
   ],
   Faculty: [
     "Overview",
     "College portal",
     "Discover clubs",
+    "My Clubs",
     "Events",
     "Volunteers",
     "Tasks",
     "Club dashboard",
     "Finance",
+    "Approvals",
     "Help desk",
     "Announcements",
+    "Council",
   ],
   "Student Council": [
     "Overview",
     "College portal",
     "Discover clubs",
+    "My Clubs",
     "Events",
     "Membership",
     "Volunteers",
     "Tasks",
+    "Club dashboard",
     "Marketplace",
     "Messages",
     "Help desk",
     "Finance",
+    "Approvals",
     "Announcements",
     "Achievements",
     "Council",
@@ -90,6 +105,7 @@ export const roleSections: Record<CampusRole, Section[]> = {
     "Overview",
     "College portal",
     "Discover clubs",
+    "My Clubs",
     "Events",
     "Membership",
     "Volunteers",
@@ -100,6 +116,7 @@ export const roleSections: Record<CampusRole, Section[]> = {
     "Messages",
     "Help desk",
     "Finance",
+    "Approvals",
     "Announcements",
     "Achievements",
     "Council",
@@ -111,21 +128,21 @@ export const roleSections: Record<CampusRole, Section[]> = {
 interface SidebarProps {
   section: Section;
   setSection: (s: Section) => void;
-  setSearch: (s: string) => void;
   role: CampusRole;
   displayName: string;
   signOut: () => void;
   eventCount: number;
+  approvalCount: number;
 }
 
 export function Sidebar({
   section,
   setSection,
-  setSearch,
   role,
   displayName,
   signOut,
   eventCount,
+  approvalCount,
 }: SidebarProps) {
   const visibleNav = navItems.filter((item) => roleSections[role].includes(item.name));
 
@@ -163,11 +180,11 @@ export function Sidebar({
             className={section === item.name ? "selected" : ""}
             onClick={() => {
               setSection(item.name);
-              setSearch("");
             }}
           >
             <Icon>{item.icon}</Icon>
             <span>{item.name}</span>
+            {item.name === "Approvals" && approvalCount > 0 && <small className="nav-badge">{approvalCount}</small>}
             {item.badge && <small className="nav-badge">{item.badge}</small>}
           </button>
         ))}

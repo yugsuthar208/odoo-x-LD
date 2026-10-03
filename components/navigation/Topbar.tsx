@@ -4,6 +4,9 @@ import React from "react";
 import type { CampusRole, Section } from "../../lib/supabase/types";
 
 interface TopbarProps {
+  autoAccept: boolean;
+  setAutoAccept: (enabled: boolean) => void;
+  clubsBusy: boolean;
   section: Section;
   role: CampusRole;
   isPreview: boolean;
@@ -15,6 +18,7 @@ interface TopbarProps {
 }
 
 export function Topbar({
+  autoAccept, setAutoAccept, clubsBusy,
   section,
   role,
   isPreview,
@@ -32,6 +36,10 @@ export function Topbar({
         <strong>{section}</strong>
       </div>
       <div className="topbar-actions">
+        {isPreview && <label className="club-test-toggle" title="Preview only: instantly approve new and pending club requests">
+          <input type="checkbox" role="switch" aria-label="Test mode: auto-accept club requests" checked={autoAccept} disabled={clubsBusy} onChange={(e) => setAutoAccept(e.target.checked)} />
+          <span>TEST MODE · AUTO-ACCEPT</span>
+        </label>}
         <span className="term-pill">
           <i /> AUTUMN TERM ’26
         </span>

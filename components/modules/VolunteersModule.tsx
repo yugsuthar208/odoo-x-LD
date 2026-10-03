@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import type { VolunteerOpportunity } from "../../lib/supabase/types";
+import React, { useState } from "react";
+import type { CampusRole, VolunteerOpportunity } from "../../lib/supabase/types";
 
 interface VolunteersModuleProps {
   totalVolunteerHours: number;
@@ -11,6 +11,8 @@ interface VolunteersModuleProps {
   volunteerOpportunities: VolunteerOpportunity[];
   commitments: string[];
   handleVolunteerApply: (opp: VolunteerOpportunity) => void;
+  role?: CampusRole;
+  onPostOpportunity?: (opp: VolunteerOpportunity) => void;
 }
 
 export function VolunteersModule({
@@ -21,18 +23,56 @@ export function VolunteersModule({
   volunteerOpportunities,
   commitments,
   handleVolunteerApply,
+  role = "Student",
+  onPostOpportunity,
 }: VolunteersModuleProps) {
+  const isOrganizer = role === "Club Leader" || role === "Student Council" || role === "Admin";
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [oppTitle, setOppTitle] = useState("");
+  const [oppOrg, setOppOrg] = useState(
+    role === "Student Council" ? "Student Council" : "Design Society"
+  );
+  const [oppDetail, setOppDetail] = useState("Saturday · 10:00 AM · 2 hours");
+  const [oppSpots, setOppSpots] = useState(5);
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!oppTitle.trim()) return;
+    const newOpp: VolunteerOpportunity = {
+      icon: role === "Student Council" ? "✦" : "♧",
+      title: oppTitle.trim(),
+      org: oppOrg,
+      detail: oppDetail,
+      need: `${oppSpots} SPOTS LEFT`,
+      color: role === "Student Council" ? "lilac" : "mint",
+      spots: Number(oppSpots),
+    };
+    if (onPostOpportunity) {
+      onPostOpportunity(newOpp);
+    }
+    setOppTitle("");
+    setShowPostForm(false);
+  };
+
   return (
     <>
       <div className="page-heading volunteer-heading">
         <div>
-          <p className="eyebrow">SHOW UP, MAKE A DIFFERENCE</p>
+          <p className="eyebrow">
+            {isOrganizer
+              ? "COMMUNITY CORPS · DRIVE & ROSTER MANAGEMENT"
+              : "SHOW UP, MAKE A DIFFERENCE"}
+          </p>
           <h1>
             Little acts.
             <br />
             <em>Lasting ripples.</em>
           </h1>
-          <p className="welcome-copy">Find a way to pitch in that feels like you.</p>
+          <p className="welcome-copy">
+            {isOrganizer
+              ? "Mobilize student volunteers for campus events, social drives, and club operations."
+              : "Find a way to pitch in that feels like you."}
+          </p>
         </div>
         <div className="volunteer-art">
           <span>♡</span>
@@ -43,38 +83,103 @@ export function VolunteersModule({
           </small>
         </div>
       </div>
+
       <div className="impact-strip">
         <div>
           <span className="impact-icon mint-bg">♡</span>
           <p>
             <b>{totalVolunteerHours} hours</b>
-            <small>given this term</small>
+            <small>{isOrganizer ? "Mobilized this term" : "Given this term"}</small>
           </p>
         </div>
         <div>
           <span className="impact-icon lilac-bg">✦</span>
           <p>
             <b>{totalPoints} points</b>
-            <small>earned by showing up</small>
+            <small>{isOrganizer ? "Awarded to crew" : "Earned by showing up"}</small>
           </p>
         </div>
         <div>
           <span className="impact-icon yellow-bg">✹</span>
           <p>
-            <b>First Steps</b>
-            <small>your latest badge</small>
+            <b>{commitments.length + 3} Volunteers</b>
+            <small>Active on campus</small>
           </p>
         </div>
         <div className="impact-progress">
-          <span>YOUR NEXT MILESTONE</span>
+          <span>CAMPUS VOLUNTEER QUOTA</span>
           <b>
-            Community Builder <small>{Math.min(200, totalPoints)} / 200 pts</small>
+            Community Impact <small>{Math.min(200, totalPoints)} / 200 pts</small>
           </b>
           <div>
             <i style={{ width: `${Math.min(100, (totalPoints / 200) * 100)}%` }} />
           </div>
         </div>
       </div>
+
+      {/* Organizer Call-to-Action to Post Opportunity */}
+      {isOrganizer && (
+        <div
+          style={{
+            margin: "12px 0 16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>
+            Active volunteer drives managed by your organization
+          </span>
+          <button
+            type="button"
+            className="primary-button"
+            onClick={() => setShowPostForm(!showPostForm)}
+            style={{ fontSize: 11, padding: "7px 14px" }}
+          >
+            {showPostForm ? "Close Form ×" : "+ Post Volunteer Call"}
+          </button>
+        </div>
+      )}
+
+      {showPostForm && (
+        <form
+          className="inline-create"
+          onSubmit={handleCreate}
+          style={{ marginBottom: 18, background: "#f9faf7", padding: 14, borderRadius: 8 }}
+        >
+          <input
+            type="text"
+            value={oppTitle}
+            onChange={(e) => setOppTitle(e.target.value)}
+            placeholder="Volunteer role title (e.g. Stage Setup Crew, Registration Desk)…"
+            required
+            style={{ flex: 2 }}
+          />
+          <input
+            type="text"
+            value={oppOrg}
+            onChange={(e) => setOppOrg(e.target.value)}
+            placeholder="Host Organization"
+            style={{ flex: 1 }}
+          />
+          <input
+            type="text"
+            value={oppDetail}
+            onChange={(e) => setOppDetail(e.target.value)}
+            placeholder="Schedule (e.g. Sunday · 2 hours)"
+            style={{ flex: 1 }}
+          />
+          <input
+            type="number"
+            value={oppSpots}
+            onChange={(e) => setOppSpots(Number(e.target.value))}
+            placeholder="Spots"
+            style={{ maxWidth: 75 }}
+          />
+          <button type="submit">PUBLISH CALL +</button>
+        </form>
+      )}
+
       <div className="section-tabs">
         <button
           className={volunteerTab === "Opportunities" ? "active" : ""}
@@ -86,9 +191,11 @@ export function VolunteersModule({
           className={volunteerTab === "My commitments" ? "active" : ""}
           onClick={() => setVolunteerTab("My commitments")}
         >
-          My commitments<span>{String(commitments.length + 2).padStart(2, "0")}</span>
+          {isOrganizer ? "Volunteer Roster" : "My commitments"}
+          <span>{String(commitments.length + 2).padStart(2, "0")}</span>
         </button>
       </div>
+
       <div className="volunteer-list">
         {volunteerTab === "Opportunities" ? (
           volunteerOpportunities.map((item) => (
@@ -100,7 +207,11 @@ export function VolunteersModule({
                 <p>{item.detail}</p>
               </div>
               <span className="spots">{item.need}</span>
-              <button className="round-arrow" onClick={() => handleVolunteerApply(item)}>
+              <button
+                className="round-arrow"
+                onClick={() => handleVolunteerApply(item)}
+                title="Volunteer sign-up"
+              >
                 {commitments.includes(item.title) ? "✓" : "↗"}
               </button>
             </article>
@@ -111,9 +222,13 @@ export function VolunteersModule({
               <article className="vol-row" key={title}>
                 <span className="vol-symbol mint">♡</span>
                 <div className="vol-copy">
-                  <small>CAMPUS VOLUNTEERING</small>
+                  <small>{isOrganizer ? "ENROLLED VOLUNTEER" : "CAMPUS VOLUNTEERING"}</small>
                   <h3>{title}</h3>
-                  <p>Status: Registered · Volunteer hour credits active</p>
+                  <p>
+                    {isOrganizer
+                      ? "Assigned to event logistics · Attendance confirmed"
+                      : "Status: Registered · Volunteer hour credits active"}
+                  </p>
                 </div>
                 <span className="spots">CONFIRMED ✓</span>
                 <button className="round-arrow">✓</button>

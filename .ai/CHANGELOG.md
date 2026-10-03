@@ -1,5 +1,26 @@
 # Development Changelog
 
+## [2026-10-03] - Faculty Approval and Council Treasury
+- Replaced the shared finance demo with separate club accounts, Council treasury, funding transfers, and approved expenses using integer paise.
+- Added Leader → Faculty → Admin → Council funding workflow, rejection reasons, cancellation, and approval history.
+- Added faculty-reviewed events, announcements, activities, and leader membership recommendations; Admin can assign/revoke club staff and override faculty review.
+- Added governance migration and permission/browser checks. Explicit local preview no longer waits on hosted authentication.
+- Passed the production build, both Playwright suites (governance and club membership), both PostgreSQL permission suites, mobile overflow checks, and visual inspection.
+
+
+## [2026-10-03] - Ten Clubs and Student Membership
+- Added a ten-club directory and linkable club pages, My Clubs, pending/approved/rejected requests, admin reviews, cancellation and leaving.
+- Added preview-only auto-accept, including all already-pending requests, and a shared preview store for student/admin testing.
+- Added member-only events and RSVP/cancellation, announcements and publishing, and member directories. Leaving deletes associated RSVPs.
+- Added dedicated Supabase club tables, RLS, and permission-checked mutation functions; updated setup instructions and AI context.
+- Passed browser workflow tests for all ten clubs and mobile layout, PostgreSQL permission tests, and the production build. Hosted schema installation is blocked by the configured database's `tenant/user not found` error.
+
+
+## [2026-10-03] - Refresh Project Orientation for Current Routes
+- Updated AI project context and codebase map for current `/login` and `/dashboard` route split and root redirect.
+- Documented the existing but inactive Prisma schema/client alongside the active Supabase data path.
+- Recorded the pre-existing uncommitted workspace edits so follow-up implementation can preserve them.
+
 ## [2026-10-03] - Adopt Modular Architecture and Polish Login
 - Adopted the latest `origin/main` modular refactor as the local `main` baseline.
 - Refined the login page layout while preserving its auth and preview flow.

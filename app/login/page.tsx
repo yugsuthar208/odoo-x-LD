@@ -46,9 +46,12 @@ export default function LoginPage() {
   return (
     <main className="login-shell" suppressHydrationWarning>
       <section className="login-story">
-        <a className="brand login-brand" href="/">
-          <span className="brand-mark">c</span>
-          <span>campus<span className="brand-light">.commons</span><small>YOUR CAMPUS, IN SYNC</small></span>
+        <a className="brand login-brand" href="/" aria-label="Campus Commons">
+          <img
+            src="/brand-logo.png"
+            alt="Campus Commons - Your Campus, In Sync"
+            className="login-brand-logo"
+          />
         </a>
         <div className="login-story-copy">
           <p className="eyebrow">NORTHSTAR UNIVERSITY · AUTUMN ’26</p>

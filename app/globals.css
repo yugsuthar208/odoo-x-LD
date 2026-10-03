@@ -984,3 +984,23 @@ small {
   letter-spacing: 0.6px;
   margin-top: auto !important;
 }
+
+.login-brand {
+  height: auto !important;
+  align-self: flex-start !important;
+}
+
+.login-brand-logo {
+  height: 48px;
+  width: auto;
+  max-width: 260px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 760px) {
+  .login-brand-logo {
+    height: 38px;
+    max-width: 210px;
+  }
+}

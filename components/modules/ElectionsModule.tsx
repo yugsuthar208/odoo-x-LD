@@ -29,7 +29,7 @@ export function ElectionsModule({
       subtitle="Read candidate ideas and cast one demo vote for each position."
     >
       <div className="election-notice">
-        <span>✳</span>
+        <span>✦</span>
         <div>
           <b>Student Council Election · 2026</b>
           <p>Demo votes are stored on this device.</p>

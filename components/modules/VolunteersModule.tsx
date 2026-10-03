@@ -52,7 +52,7 @@ export function VolunteersModule({
           </p>
         </div>
         <div>
-          <span className="impact-icon lilac-bg">✳</span>
+          <span className="impact-icon lilac-bg">✦</span>
           <p>
             <b>{totalPoints} points</b>
             <small>earned by showing up</small>
@@ -130,7 +130,7 @@ export function VolunteersModule({
               <button className="round-arrow">✓</button>
             </article>
             <article className="vol-row">
-              <span className="vol-symbol lilac">✳</span>
+              <span className="vol-symbol lilac">✦</span>
               <div className="vol-copy">
                 <small>DESIGN SOCIETY</small>
                 <h3>Design for good workshop</h3>

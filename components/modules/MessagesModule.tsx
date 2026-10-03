@@ -47,7 +47,7 @@ export function MessagesModule({
                 key={name}
                 onClick={() => setActiveChannel(name)}
               >
-                <span>{["◎", "✳", "♡", "⌘"][i]}</span>
+                <span>{["◎", "✦", "♡", "⌘"][i]}</span>
                 <div>
                   <b>{name}</b>
                   <small>

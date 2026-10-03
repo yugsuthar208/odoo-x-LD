@@ -139,7 +139,7 @@ export function EventsModule({
         })}
       </div>
       <div className="event-footer-note">
-        <span>✳</span> Plans change. Good memories stick.
+        <span>✦</span> Plans change. Good memories stick.
         <button
           onClick={() => {
             setSection("Help desk");

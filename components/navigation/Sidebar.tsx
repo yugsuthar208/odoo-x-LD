@@ -7,7 +7,7 @@ import type { CampusRole, Section } from "../../lib/supabase/types";
 export const navItems: { name: Section; icon: string; badge?: string }[] = [
   { name: "Overview", icon: "◫" },
   { name: "College portal", icon: "⌂" },
-  { name: "Discover clubs", icon: "✳" },
+  { name: "Discover clubs", icon: "◎" },
   { name: "Events", icon: "▦", badge: "3" },
   { name: "Membership", icon: "♧" },
   { name: "Volunteers", icon: "♡" },
@@ -140,7 +140,7 @@ export function Sidebar({
         }}
       >
         <span className="brand-mark">
-          c<span>✳</span>
+          c
         </span>
         <span>
           campus<span className="brand-light">.commons</span>
@@ -174,7 +174,7 @@ export function Sidebar({
       </nav>
       <div className="sidebar-spacer" />
       <div className="side-tip">
-        <span className="tip-star">✳</span>
+        <span className="tip-star">✦</span>
         <b>
           Good things happen
           <br />

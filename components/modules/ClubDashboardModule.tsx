@@ -41,7 +41,7 @@ export function ClubDashboardModule({
     >
       <div className={`club-engine-preview ${theme}`}>
         <div className="club-engine-cover">
-          <span>✳</span>
+          <span>✦</span>
           <small>DESIGN SOCIETY · EST. 2022</small>
           <h2>
             Make room

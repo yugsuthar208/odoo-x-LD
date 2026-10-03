@@ -42,7 +42,7 @@ export function CollegePortalModule({
           </div>
           {announcements.slice(0, 3).map((item) => (
             <article className="news-card" key={item.title}>
-              <span className="news-pin">✳</span>
+              <span className="news-pin">✦</span>
               <div>
                 <small>
                   {item.audience} <i>·</i> {item.date}
@@ -89,7 +89,7 @@ export function CollegePortalModule({
                 <span
                   className={`portal-club-icon ${["lilac", "mint", "yellow", "pink"][index]}`}
                 >
-                  {["✳", "⌘", "♧", "◉"][index]}
+                  {["✦", "⌘", "♧", "◉"][index]}
                 </span>
                 <b>{club}</b>
                 <small>{["CREATIVE", "TECHNOLOGY", "COMMUNITY", "CULTURE"][index]}</small>

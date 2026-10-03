@@ -20,7 +20,7 @@ export function ModulePage({
           <p className="welcome-copy">{subtitle}</p>
         </div>
         <div className="heading-sticker">
-          CAMPUS<br />COMMONS <span>✳</span>
+          CAMPUS<br />COMMONS <span>✦</span>
         </div>
       </div>
       {children}

@@ -45,7 +45,7 @@ export function FinanceModule({
           <p className="welcome-copy">A transparent view of how your campus clubs make things happen.</p>
         </div>
         <div className="finance-mark">
-          ₹<span>✳</span>
+          ₹<span>✦</span>
         </div>
       </div>
       <div className="finance-summary">
@@ -129,7 +129,7 @@ export function FinanceModule({
           </div>
         </div>
         <aside className="budget-note">
-          <span>✳</span>
+          <span>✦</span>
           <p className="eyebrow">CAMPUS PULSE</p>
           <h3>
             Budgets with

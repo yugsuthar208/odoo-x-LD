@@ -37,7 +37,7 @@ export function DiscoverClubsModule({
         <div className="heading-sticker">
           COME AS
           <br />
-          YOU ARE <span>✳</span>
+          YOU ARE <span>✦</span>
         </div>
       </div>
       <div className="filter-bar">
@@ -71,7 +71,7 @@ export function DiscoverClubsModule({
               <div className={`club-cover ${club.color}`}>
                 <span className="club-symbol">{club.icon}</span>
                 <span className="club-cat">{club.category}</span>
-                <span className="cover-decoration">✳</span>
+                <span className="cover-decoration">✦</span>
               </div>
               <div className="club-card-body">
                 <div className="club-name-row">
@@ -97,7 +97,7 @@ export function DiscoverClubsModule({
       </div>
       {filteredClubs.length === 0 && (
         <div className="empty-state">
-          <span>✳</span>
+          <span>✦</span>
           <h3>No clubs found just yet.</h3>
           <p>Try a different search or category.</p>
           <button

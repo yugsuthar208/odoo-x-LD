@@ -47,7 +47,7 @@ export default function LoginPage() {
     <main className="login-shell" suppressHydrationWarning>
       <section className="login-story">
         <a className="brand login-brand" href="/">
-          <span className="brand-mark">c<span>✳</span></span>
+          <span className="brand-mark">c</span>
           <span>campus<span className="brand-light">.commons</span><small>YOUR CAMPUS, IN SYNC</small></span>
         </a>
         <div className="login-story-copy">
@@ -62,11 +62,11 @@ export default function LoginPage() {
         </div>
         <div className="login-story-art">
           <span className="login-sun">☼</span>
-          <span className="login-flower">✳</span>
+          <span className="login-flower">❀</span>
           <span className="login-doodle">good things<br/>grow here</span>
           <div className="login-hill"/>
         </div>
-        <footer>✳ CAMPUS COMMONS <span>MADE FOR THE PEOPLE WHO MAKE CAMPUS.</span></footer>
+        <footer>CAMPUS COMMONS <span>MADE FOR THE PEOPLE WHO MAKE CAMPUS.</span></footer>
       </section>
       <section className="login-panel">
         <div className="login-card">
@@ -92,7 +92,7 @@ export default function LoginPage() {
           {notice && <p className="login-feedback success">{notice}</p>}
           <div className="preview-box">
             <div className="preview-title">
-              <span>✳</span>
+              <span>✦</span>
               <div><b>Just looking around?</b><small>Explore the interactive demo without an account.</small></div>
             </div>
             <label>PREVIEW A ROLE

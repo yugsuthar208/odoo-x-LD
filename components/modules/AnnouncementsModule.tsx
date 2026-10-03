@@ -51,7 +51,7 @@ export function AnnouncementsModule({
           {announcements.map((item, index) => (
             <article className="announcement-card" key={`${item.title}-${index}`}>
               <div className="announcement-meta">
-                <span className={`announcement-dot ${index % 2 ? "mint" : "lilac"}`}>✳</span>
+                <span className={`announcement-dot ${index % 2 ? "mint" : "lilac"}`}>✦</span>
                 <small>
                   {item.audience} <i>·</i> {item.date}
                 </small>

@@ -78,7 +78,7 @@ export function MembershipModule({
         ))}
       </div>
       <div className="membership-note">
-        <span>✳</span>
+        <span>✦</span>
         <p>
           <b>Membership is more than a payment.</b> It helps clubs plan better events, buy better materials and keep the door open.
         </p>

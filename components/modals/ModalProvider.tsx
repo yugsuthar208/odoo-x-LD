@@ -43,7 +43,7 @@ export function ModalProvider({
 
         {modal.type === "ticket" && (
           <>
-            <div className="modal-spark">✳</div>
+            <div className="modal-spark">✦</div>
             <p className="eyebrow">YOUR DIGITAL PASS</p>
             <h2>That’s a plan.</h2>
             <p>Your spot for “{modal.event.title}” is confirmed. Present this pass at check-in.</p>
@@ -85,7 +85,7 @@ export function ModalProvider({
                   category: catInput.value,
                   members: "1 member",
                   color: "mint",
-                  icon: "✳",
+                  icon: "✦",
                   description: descInput.value.trim(),
                   next: "Inaugural meeting coming soon",
                 };
@@ -127,7 +127,7 @@ export function ModalProvider({
                   votes: 1,
                   supported: true,
                   color: "mint",
-                  icon: "✳",
+                  icon: "✦",
                 };
                 setCouncilIdeas((cur) => [newIdea, ...cur]);
                 void recordActivity("issue", { title: newIdea.title, category: newIdea.cat });
@@ -192,7 +192,7 @@ export function ModalProvider({
 
         {modal.type === "public_club_preview" && (
           <>
-            <div className="modal-spark">✳</div>
+            <div className="modal-spark">✦</div>
             <p className="eyebrow">LIVE PREVIEW</p>
             <h2>Design Society</h2>
             <p style={{ fontStyle: "italic", margin: "12px 0", color: "#546e53" }}>

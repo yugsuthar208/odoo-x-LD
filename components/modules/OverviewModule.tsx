@@ -89,7 +89,7 @@ export function OverviewModule({
       <section className="welcome-row">
         <div>
           <p className="eyebrow">
-            {roleCopy[role].eyebrow} <span className="eyebrow-spark">✳</span>
+            {roleCopy[role].eyebrow} <span className="eyebrow-spark">✦</span>
           </p>
           <h1>{roleCopy[role].title}</h1>
           <p className="welcome-copy">
@@ -110,7 +110,7 @@ export function OverviewModule({
             <br />
             BELONG
             <br />
-            HERE <span>✳</span>
+            HERE <span>✦</span>
           </div>
         </div>
       </section>
@@ -123,7 +123,7 @@ export function OverviewModule({
                   index === 0 ? "lilac-bg" : index === 1 ? "yellow-bg" : "mint-bg"
                 }`}
               >
-                {index === 0 ? "✳" : index === 1 ? "▦" : "♡"}
+                {index === 0 ? "✦" : index === 1 ? "▦" : "♡"}
               </span>
               <span className="stat-trend">{role === "Student" ? "↗ new" : "LIVE"}</span>
             </div>
@@ -167,7 +167,7 @@ export function OverviewModule({
             <div>
               <p className="eyebrow">MADE FOR YOUR CALENDAR</p>
               <h2>
-                Coming up <span>✳</span>
+                Coming up <span>✦</span>
               </h2>
             </div>
             <button className="text-link" onClick={() => setSection("Events")}>
@@ -219,7 +219,7 @@ export function OverviewModule({
           </div>
           <div className="activity-feed">
             <div className="feed-item">
-              <span className="feed-icon lilac-bg">✳</span>
+              <span className="feed-icon lilac-bg">✦</span>
               <p>
                 <b>You found your people.</b>
                 <br />

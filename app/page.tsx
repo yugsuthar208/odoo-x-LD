@@ -46,7 +46,7 @@ import { AchievementsModule } from "../components/modules/AchievementsModule";
 import { ClubDashboardModule } from "../components/modules/ClubDashboardModule";
 
 const initialClubs: Club[] = [
-  { name: "Design Society", category: "CREATIVE", members: "248 members", color: "lilac", icon: "✳", description: "A home for curious minds, visual thinkers and makers who love turning ideas into something real.", next: "Poster Jam · Fri, 4:30 PM" },
+  { name: "Design Society", category: "CREATIVE", members: "248 members", color: "lilac", icon: "🎨", description: "A home for curious minds, visual thinkers and makers who love turning ideas into something real.", next: "Poster Jam · Fri, 4:30 PM" },
   { name: "Robotics & AI", category: "TECHNOLOGY", members: "186 members", color: "mint", icon: "⌘", description: "Build intelligent machines, learn by doing and find a team for the next big challenge.", next: "Open Lab · Sat, 11:00 AM" },
   { name: "The Green Collective", category: "COMMUNITY", members: "312 members", color: "yellow", icon: "♧", description: "Small campus changes add up. Join hands on sustainability, gardens and cleaner spaces.", next: "Campus Garden · Sun, 9:00 AM" },
   { name: "Frame by Frame", category: "CULTURE", members: "124 members", color: "pink", icon: "◉", description: "For the people who see a story everywhere. Shoot, edit, screen and share together.", next: "Short Film Night · Tue, 6:00 PM" },
@@ -93,7 +93,7 @@ export default function Home() {
   ]);
   const [activeChannel, setActiveChannel] = useState("Student Council");
   const [memberships, setMemberships] = useState<MembershipItem[]>([
-    { club: "Design Society", status: "ACTIVE", dues: "Paid until Jun 2027", color: "lilac", icon: "✳" },
+    { club: "Design Society", status: "ACTIVE", dues: "Paid until Jun 2027", color: "lilac", icon: "🎨" },
     { club: "Robotics & AI", status: "RENEW SOON", dues: "Expires in 18 days", color: "mint", icon: "⌘" },
     { club: "The Green Collective", status: "PENDING", dues: "Dues: ₹250", color: "yellow", icon: "♧" },
   ]);
@@ -103,7 +103,7 @@ export default function Home() {
     { title: "Open Lab needs two more volunteers", audience: "ROBOTICS & AI", date: "Oct 10 · Robotics & AI", body: "Help us welcome new makers on Saturday morning." },
   ]);
   const [shopItems, setShopItems] = useState<ShopItem[]>([
-    { name: "Northstar club hoodie", club: "Design Society", price: 850, stock: 8, variant: "S · M · L", color: "lilac", emoji: "✳" },
+    { name: "Northstar club hoodie", club: "Design Society", price: 850, stock: 8, variant: "S · M · L", color: "lilac", emoji: "👕" },
     { name: "Build Night tee", club: "Robotics & AI", price: 450, stock: 14, variant: "S · M · L · XL", color: "mint", emoji: "⌘" },
     { name: "Green Collective tote", club: "The Green Collective", price: 280, stock: 3, variant: "One size", color: "yellow", emoji: "♧" },
   ]);
@@ -121,7 +121,7 @@ export default function Home() {
   ]);
   const [volunteerOpportunities, setVolunteerOpportunities] = useState<VolunteerOpportunity[]>([
     { icon: "♧", title: "Give the garden a hand", org: "The Green Collective", detail: "Sunday, Oct 18 · 9:00 AM · 2 hours", need: "4 SPOTS LEFT", color: "mint", spots: 4 },
-    { icon: "✳", title: "Make welcome week wonderful", org: "Student Council", detail: "Wednesday, Oct 21 · 10:00 AM · 3 hours", need: "8 SPOTS LEFT", color: "lilac", spots: 8 },
+    { icon: "✦", title: "Make welcome week wonderful", org: "Student Council", detail: "Wednesday, Oct 21 · 10:00 AM · 3 hours", need: "8 SPOTS LEFT", color: "lilac", spots: 8 },
     { icon: "◉", title: "Help us tell the story", org: "Frame by Frame", detail: "Saturday, Oct 24 · 3:00 PM · 2 hours", need: "2 SPOTS LEFT", color: "pink", spots: 2 },
   ]);
   const [theme, setTheme] = useState("forest");
@@ -348,7 +348,7 @@ export default function Home() {
       setClubs((current) => current.map((c) => (c.name === name ? { ...c, name: `✓ ${name}` } : c)));
       setMemberships((current) => [
         ...current.filter((m) => m.club !== name),
-        { club: name, status: "ACTIVE", dues: "Paid until Jun 2027", color: "mint", icon: "✳" },
+        { club: name, status: "ACTIVE", dues: "Paid until Jun 2027", color: "mint", icon: "✦" },
       ]);
       void recordActivity("membership", { title: name });
       notify(`You're in! ${name} added to your active memberships.`);
@@ -428,7 +428,7 @@ export default function Home() {
 
     if (kind === "Marketplace") {
       const priceVal = Number(formExtra) || 250;
-      const newProd: ProductItem = { title: text, seller: displayName, price: priceVal, emoji: "✳" };
+      const newProd: ProductItem = { title: text, seller: displayName, price: priceVal, emoji: "📦" };
       setProducts((cur) => [newProd, ...cur]);
       void recordActivity("listing", newProd as unknown as Record<string, unknown>);
       notify(`Listing added for ₹${priceVal}.`);
@@ -549,7 +549,7 @@ export default function Home() {
   if (authPending) {
     return (
       <main className="auth-loading" suppressHydrationWarning>
-        <span className="brand-mark">c<span>✳</span></span>
+        <span className="brand-mark">c</span>
         <p>Getting your campus ready…</p>
       </main>
     );
@@ -833,7 +833,7 @@ export default function Home() {
         )}
 
         <footer className="app-footer">
-          <span>✳ CAMPUS.COMMONS</span>
+          <span>CAMPUS.COMMONS</span>
           <span>MADE FOR THE PEOPLE WHO MAKE CAMPUS.</span>
           <button onClick={() => notify("You’re on the latest verified release of Campus Commons.")}>
             A LITTLE MORE HUMAN <b>↗</b>
@@ -843,7 +843,7 @@ export default function Home() {
 
       {toast && (
         <div className="toast">
-          <span>✳</span>
+          <span>✦</span>
           {toast}
           <button onClick={() => setToast("")}>×</button>
         </div>

@@ -79,7 +79,7 @@ export function AchievementsModule({
           </div>
           <div className="badge-row">
             <span>
-              <b>✳</b>
+              <b>✦</b>
               <small>
                 FIRST<br />VOLUNTEER
               </small>

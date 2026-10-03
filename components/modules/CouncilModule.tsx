@@ -29,7 +29,7 @@ export function CouncilModule({
           <p className="welcome-copy">Your student council is here to help good ideas find their way forward.</p>
         </div>
         <div className="council-seal">
-          <span>✳</span>
+          <span>✦</span>
           <small>
             STUDENT
             <br />
@@ -49,7 +49,7 @@ export function CouncilModule({
           </h2>
           <p>— Ananya Rao, Student President</p>
         </div>
-        <span>✳</span>
+        <span>✦</span>
         <button onClick={() => setSection("Announcements")}>READ THE LATEST NOTE ↗</button>
       </div>
       <div className="council-grid">

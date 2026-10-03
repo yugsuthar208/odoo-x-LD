@@ -1,11 +1,90 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function MarketingLandingPage() {
+  const container = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    // Navbar drop-in
+    gsap.from(".landing-nav", {
+      y: -30,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power3.out"
+    });
+
+    // Hero content slide up and fade
+    gsap.from(".hero-content-item", {
+      y: 40,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.15,
+      ease: "power3.out",
+      delay: 0.2
+    });
+
+    // Visual cards pop-in
+    gsap.from(".visual-card", {
+      scale: 0.8,
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      stagger: 0.15,
+      ease: "back.out(1.5)",
+      delay: 0.6
+    });
+
+    // Parallax effect on scroll for hero cards
+    gsap.to(".visual-card-1", {
+      scrollTrigger: { trigger: ".landing-hero", start: "top top", end: "bottom top", scrub: 1 },
+      y: -80
+    });
+    gsap.to(".visual-card-2", {
+      scrollTrigger: { trigger: ".landing-hero", start: "top top", end: "bottom top", scrub: 1 },
+      y: -120
+    });
+    gsap.to(".visual-card-3", {
+      scrollTrigger: { trigger: ".landing-hero", start: "top top", end: "bottom top", scrub: 1 },
+      y: -50
+    });
+
+    // Features Section Title
+    gsap.from(".features-header", {
+      scrollTrigger: {
+        trigger: ".features-header",
+        start: "top 85%",
+      },
+      y: 40,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out"
+    });
+
+    // Feature items stagger
+    gsap.from(".feature-item", {
+      scrollTrigger: {
+        trigger: ".feature-grid",
+        start: "top 85%",
+      },
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: "power3.out"
+    });
+  }, { scope: container });
+
   return (
-    <div className="landing-wrapper">
+    <div className="landing-wrapper" ref={container}>
       <style dangerouslySetInnerHTML={{ __html: `
         .landing-wrapper {
           min-height: 100vh;
@@ -98,11 +177,12 @@ export default function MarketingLandingPage() {
           font-weight: 500;
           font-size: 14px;
           text-decoration: none;
-          transition: transform 0.2s, background 0.2s;
+          transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
         }
         .btn-primary:hover {
           background: #cf7c58;
           transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(226,141,104,0.3);
         }
         .btn-secondary {
           padding: 16px 32px;
@@ -136,23 +216,34 @@ export default function MarketingLandingPage() {
           gap: 16px;
           box-shadow: 0 24px 48px rgba(0,0,0,0.2);
           width: 280px;
-          animation: float 6s ease-in-out infinite;
+        }
+        /* Continuous float animation combined with gsap positioning */
+        @keyframes float-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        .visual-card-content-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          width: 100%;
         }
         .visual-card-1 {
           top: 10%;
           right: 20%;
-          animation-delay: 0s;
         }
+        .visual-card-1 .visual-card-content-wrapper { animation: float-subtle 4s ease-in-out infinite 0s; }
         .visual-card-2 {
           top: 45%;
           left: 0;
-          animation-delay: -2s;
         }
+        .visual-card-2 .visual-card-content-wrapper { animation: float-subtle 5s ease-in-out infinite -1s; }
         .visual-card-3 {
           bottom: 10%;
           right: 10%;
-          animation-delay: -4s;
         }
+        .visual-card-3 .visual-card-content-wrapper { animation: float-subtle 4.5s ease-in-out infinite -2s; }
+        
         .visual-icon {
           width: 48px;
           height: 48px;
@@ -176,11 +267,6 @@ export default function MarketingLandingPage() {
           color: #71806f;
           font-family: "DM Mono", monospace;
           font-size: 10px;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-15px); }
         }
 
         /* Background art */
@@ -229,10 +315,11 @@ export default function MarketingLandingPage() {
           padding: 40px;
           border-radius: 16px;
           border: 1px solid #e4e6dc;
-          transition: transform 0.3s;
+          transition: transform 0.3s, box-shadow 0.3s;
         }
         .feature-item:hover {
           transform: translateY(-5px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.05);
         }
         .feature-icon-wrapper {
           width: 56px;
@@ -316,12 +403,12 @@ export default function MarketingLandingPage() {
       <main className="landing-hero">
         <div className="hero-art-bg"></div>
         <div className="hero-content">
-          <h1>Your Campus,<br/>All in One Place.</h1>
-          <p>
+          <h1 className="hero-content-item">Your Campus,<br/>All in One Place.</h1>
+          <p className="hero-content-item">
             Connect with clubs, discover events, buy & sell items, and manage your campus life effortlessly. 
             Designed for students who want to make the most of their college experience.
           </p>
-          <div className="hero-cta">
+          <div className="hero-cta hero-content-item">
             <Link href="/login" className="btn-primary">Get Started Now</Link>
             <a href="#features" className="btn-secondary">Explore Features</a>
           </div>
@@ -329,24 +416,30 @@ export default function MarketingLandingPage() {
         
         <div className="hero-visual">
           <div className="visual-card visual-card-1">
-            <span className="visual-icon card-1-icon">🎨</span>
-            <div className="visual-text">
-              <strong>Design Society</strong>
-              <small>Poster Jam · Fri, 4:30 PM</small>
+            <div className="visual-card-content-wrapper">
+              <span className="visual-icon card-1-icon">🎨</span>
+              <div className="visual-text">
+                <strong>Design Society</strong>
+                <small>Poster Jam · Fri, 4:30 PM</small>
+              </div>
             </div>
           </div>
           <div className="visual-card visual-card-2">
-            <span className="visual-icon card-2-icon">📌</span>
-            <div className="visual-text">
-              <strong>Campus Market</strong>
-              <small>Hand-printed campus tote</small>
+            <div className="visual-card-content-wrapper">
+              <span className="visual-icon card-2-icon">📌</span>
+              <div className="visual-text">
+                <strong>Campus Market</strong>
+                <small>Hand-printed campus tote</small>
+              </div>
             </div>
           </div>
           <div className="visual-card visual-card-3">
-            <span className="visual-icon card-3-icon">✦</span>
-            <div className="visual-text">
-              <strong>Student Council</strong>
-              <small>Elections ending soon</small>
+            <div className="visual-card-content-wrapper">
+              <span className="visual-icon card-3-icon">✦</span>
+              <div className="visual-text">
+                <strong>Student Council</strong>
+                <small>Elections ending soon</small>
+              </div>
             </div>
           </div>
         </div>

@@ -2,8 +2,8 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabase } from "../lib/supabase";
-import type { CampusRole } from "../lib/supabase/types";
+import { getSupabase } from "../../lib/supabase";
+import type { CampusRole } from "../../lib/supabase/types";
 
 export default function LoginPage() {
   const router = useRouter();

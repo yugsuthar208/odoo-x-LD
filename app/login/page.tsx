@@ -27,7 +27,7 @@ export default function LoginPage() {
     if (result.error) { setError(result.error.message); return; }
     if (mode === "signup" && !result.data.session) { setNotice("Check your email to confirm your account, then come back here to sign in."); return; }
     window.localStorage.removeItem("campus-commons-preview-role");
-    window.location.href = "/";
+    window.location.href = "/dashboard";
   }
 
   async function resetPassword() {
@@ -40,7 +40,7 @@ export default function LoginPage() {
 
   function enterPreview() {
     window.localStorage.setItem("campus-commons-preview-role", previewRole);
-    window.location.href = "/";
+    window.location.href = "/dashboard";
   }
 
   return (

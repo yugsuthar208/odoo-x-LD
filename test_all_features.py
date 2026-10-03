@@ -48,7 +48,7 @@ def run_tests():
             preview_select = page.locator(".preview-box select")
             preview_select.select_option("Student")
             page.click(".preview-box button")
-            page.wait_for_url("http://localhost:3000/")
+            page.wait_for_url("http://localhost:3000/dashboard")
             page.wait_for_selector(".app-shell", timeout=6000)
             record_pass("Explore demo preview entry successful")
         except Exception as e:

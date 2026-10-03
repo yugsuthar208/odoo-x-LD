@@ -1,123 +1,45 @@
 # Project Context: Campus Commons
 
-## Project Purpose
-Campus Commons is a role-aware campus organization and student life platform for higher education communities (themed for Northstar University). It provides a unified workspace for students, club leaders, faculty advisors, student council representatives, and administrators to discover clubs, manage events, volunteer, coordinate tasks, post marketplace items, raise campus issues, view financial ledgers, participate in elections, and manage member roles.
+## Purpose
 
-The application operates in two distinct execution modes:
-1. **Supabase Live Mode**: Authenticated multi-user workspace backed by Supabase Auth and PostgreSQL with Row-Level Security (RLS).
-2. **Local Preview Mode**: Zero-backend browser-only interactive demo using `localStorage` for role and state switching.
+Campus Commons is a role-aware campus organization and student life platform themed for Northstar University. Students, club leaders, faculty, student council representatives, and admins use it to explore clubs, events, volunteering, tasks, marketplace listings, campus issues, finance, announcements, and elections.
 
----
+## Stack
 
-## Technology Stack
-- **Framework**: Next.js 15.5.27 (App Router)
-- **UI Library**: React 19.0.0 / React DOM 19.0.0
-- **Language**: TypeScript 5.x (Strict mode, ES2017 target)
-- **Backend-as-a-Service / Database**: Supabase (`@supabase/supabase-js` v2.117.2), PostgreSQL with `pgcrypto` & RLS
-- **Styling**: Pure custom CSS (`app/globals.css`) with CSS custom properties, Google Fonts (`DM Sans`, `DM Mono`, `Fraunces`, `Patrick Hand`), CSS Grid/Flexbox, and responsive media queries (no Tailwind/CSS-in-JS).
-- **Node Target**: Node.js 20+
+- Next.js 15 App Router, React 19, TypeScript 5 in strict mode.
+- Custom CSS in `app/globals.css`; Google Fonts are loaded from that stylesheet.
+- Supabase JavaScript client (`@supabase/supabase-js`) for browser auth and direct database access.
+- Supabase PostgreSQL with row-level security (RLS), defined in `supabase/schema.sql`.
+- Node.js 20+ is recommended by `README.md`.
 
----
+## Architecture and conventions
 
-## Major Features & Modules (18 Sections)
-- **Overview**: Role-tailored dashboard with contextual greeting, key metrics, upcoming events preview, and activity feed.
-- **College Portal**: Central campus hub featuring official college news, campus handbook/contacts, student partner offers, and club directory.
-- **Discover Clubs**: Filterable club catalog by category (`CREATIVE`, `TECHNOLOGY`, `COMMUNITY`, `CULTURE`), search, and club joining.
-- **Events & Ticketing**: Event calendar, RSVP / ticket issuance, inline event creation (for privileged roles), and QR check-in demo.
-- **Membership**: Club membership status tracking (`ACTIVE`, `RENEW SOON`, `PENDING`), dues renewal, and member benefits.
-- **Volunteers**: Opportunity listings, hours/points tracking, badge progression, and volunteer application commitments.
-- **Tasks**: Shared team task checklist with status toggles, progress tracking, and inline task creation.
-- **Club Dashboard**: Dedicated leader workspace with customizable club page engine (themes like Forest / Sunset) and operational shortcuts.
-- **Club Shop**: Official club-managed merchandise store with live stock counts and ordering (separate from student marketplace).
-- **Marketplace**: Student-to-student buy-and-sell reuse marketplace with pricing and seller inquiry.
-- **Messages**: Campus announcement channels and conversation interface.
-- **Help Desk / Issues**: Issue submission, topic categorization, status tracking, and community upvoting.
-- **Finance**: Organization budget breakdown, income/spending metrics, and recent transaction ledger.
-- **Announcements**: Official campus announcement board and announcement publisher studio with audience targeting.
-- **Achievements**: Gamified student profile with volunteer points, hours given, badging system, and volunteer/marketplace leaderboards.
-- **Council**: Student council announcements, open student initiative support, and election preview.
-- **Elections**: Candidate profiles, manifestos, and position-based voting.
-- **Administration**: Admin-only member directory and role management selector.
+- `app/page.tsx` owns workspace state, hydration, role capabilities, and composition of module components from `components/modules/`.
+- `components/navigation/` contains sidebar/topbar/notification UI; `components/modals/ModalProvider.tsx` owns modal rendering and handlers; `components/ui/` contains shared primitives.
+- Keep shared data shapes and role types in `lib/supabase/types.ts`; Supabase client initialization is in `lib/supabase.ts`.
+- There is no application API route or ORM. Client components call Supabase directly; RLS is the database authorization boundary. Hidden UI controls alone do not secure data.
+- `campus_records` is a JSONB record table keyed by a constrained `kind`, rather than separate relational tables for every feature.
+- Keep the five role values aligned with types and SQL: `Student`, `Club Leader`, `Faculty`, `Student Council`, `Admin`.
 
----
+## Authentication, data, and demo mode
 
-## Roles & Access Control
-Five distinct campus roles are defined in `CampusRole` (`lib/supabase.ts` and `supabase/schema.sql`):
-1. **Student**: Overview, College portal, Discover clubs, Events, Membership, Volunteers, Marketplace, Club shop, Messages, Help desk, Announcements, Achievements, Elections.
-2. **Club Leader**: Student capabilities + Tasks, Club dashboard, Finance, announcement publishing studio.
-3. **Faculty**: Overview, College portal, Discover clubs, Events, Volunteers, Tasks, Club dashboard, Finance, Help desk, Announcements.
-4. **Student Council**: Campus governance, issue moderation, budgets, elections, announcements, task board, all student areas.
-5. **Admin**: Full system access, all 18 campus modules, and the Administration member/role management directory.
+- `.env.example` names `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; never commit secret keys or environment values.
+- Supabase Auth handles email/password sign-in, sign-up, and reset. A database trigger creates a default Student profile. Role assignment is administrative.
+- Preview mode uses browser `localStorage` and is not an authenticated account. The workspace also saves a per-profile demo-state snapshot; configured sessions additionally read/write selected `campus_records`.
+- Many figures and some interactions are seeded/demo data. Consult `README.md` and `.ai/ARCHITECTURE.md` for persistence boundaries and known production gaps.
 
----
+## Commands and checks
 
-## Important Commands
-- **Install dependencies**: `npm install` (or `npm.cmd install` on Windows)
-- **Start development server**: `npm run dev` (Runs on `http://localhost:3000`)
-- **Build production bundle**: `npm run build`
-- **Start production server**: `npm run start`
+- `npm.cmd install` / `npm install` — install dependencies.
+- `npm.cmd run dev` — run the development server.
+- `npm.cmd run build` — production build (includes Next.js type validation).
+- `npm.cmd run start` — run the production build.
+- `npx tsc --noEmit` — standalone TypeScript check; Next-generated types may need to exist first.
+- `test_all_features.py` is a standalone Playwright script; it is not wired to an npm test script and expects a local server at port 3000. Python Playwright is not declared in `package.json`.
 
----
+## Current state and limitations
 
-## Database & ORM
-- **Database Engine**: PostgreSQL managed via Supabase.
-- **Schema Location**: `supabase/schema.sql` (applied manually in Supabase SQL Editor).
-- **Tables**:
-  - `public.profiles`: Stores user IDs (linked to `auth.users`), `full_name`, and assigned `role`.
-  - `public.campus_records`: Generic activity record store with `kind` discriminator, `payload` JSONB data, `created_by` UUID, and timestamps.
-- **Access Pattern**: Direct client-side queries via `@supabase/supabase-js` client; data security enforced at the database level using Row-Level Security (RLS) policies and PostgreSQL helper functions (`current_campus_role()`).
-
----
-
-## External Services & Integrations
-- **Supabase**:
-  - Supabase Auth (Email + Password sign-in, sign-up, password reset).
-  - Supabase PostgreSQL Database (REST API access via PostgREST).
-- **Google Fonts**: Web fonts imported via CDN in `app/globals.css`.
-
----
-
-## Authentication Flow
-- Handled in `app/login/page.tsx` via Supabase client:
-  - Sign in: `supabase.auth.signInWithPassword({ email, password })`
-  - Sign up: `supabase.auth.signUp({ email, password, options: { data: { full_name } } })`
-  - Password reset: `supabase.auth.resetPasswordForEmail(email, { redirectTo })`
-- Automatic user profile creation: A PostgreSQL trigger (`on_auth_user_created_campus_profile`) automatically creates a `profiles` record with default role `Student` upon user registration.
-- Fallback preview mode: If environment variables are missing or preview is selected, stores `campus-commons-preview-role` in `localStorage`.
-
----
-
-## Important Environment Variables
-Configured in `.env.local` (reference: `.env.example`):
-- `NEXT_PUBLIC_SUPABASE_URL`: URL of the Supabase project.
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous public API key.
-
-*Note: Never place service-role keys or secrets in `NEXT_PUBLIC_*` variables.*
-
----
-
-## Important Conventions & Code Rules
-- **Direct Client Architecture**: Next.js App Router is used with client components (`"use client"`). All data fetching and mutations happen client-side.
-- **Dual Persistence**: Data mutations update React state, local storage (`campus-commons-demo-v1:*`), and insert records to Supabase `campus_records` if connected.
-- **CSS Architecture**: Styling is centralized in `app/globals.css` using custom semantic classes, variables, and media queries. Avoid introducing arbitrary utility classes or external CSS frameworks unless requested.
-- **Role Guarding**: Feature capabilities (`canCreateEvents`, `canManageTasks`, `canListMarketplace`, `canModerateIssues`, `canAdminister`, `canPublish`) and visible navigation items are derived from the active `role` state.
-
----
-
-## Key Constraints & Warnings
-- **Database Polymorphism**: `campus_records` stores varied entities (`event`, `task`, `listing`, `issue`, `chat_message`, `ticket`, `checkin`, `vote`, `membership`, `announcement`, `finance_entry`) as JSONB payloads rather than individual relational tables.
-- **No API Routes**: There are currently no Next.js Route Handlers (`app/api/*`).
-- **No Realtime Subscriptions**: Updates are fetched on initial hydration; live multi-client synchronization currently requires a refresh or manual hydration.
-- **Demo Boundaries**: Financial calculations, ticket QR code scanning, multi-party messaging, and secret ballot voting contain client-side simulations and placeholder integrations.
-
----
-
-## Current Project State
-- Full interactive frontend implemented in `app/page.tsx` (Core modules + SRS frontend extension `SrsFrontendPages`) and `app/login/page.tsx`.
-- Complete Supabase schema and RLS policies defined in `supabase/schema.sql`.
-- Ready for local development and Vercel deployment.
-
----
+The latest codebase splits the 18 workspace sections into dedicated components under `components/modules/`. Login remains in `app/login/page.tsx`. Supabase schema and RLS are present. The UI still contains demo fixtures and simulations; `README.md` lists payment settlement, production QR validation, private multi-party messaging, OCR, and independently auditable anonymous ballots as unfinished production work. No CI or deployment configuration is checked in; Vercel steps are documented in `README.md`.
 
 ## AI WORKFLOW
 

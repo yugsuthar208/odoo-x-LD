@@ -1,5 +1,10 @@
 # Development Changelog
 
+## [2026-10-03] - Adopt Modular Architecture and Polish Login
+- Adopted the latest `origin/main` modular refactor as the local `main` baseline.
+- Refined the login page layout while preserving its auth and preview flow.
+- Updated AI context docs to match the component modules, shared types, and standalone Playwright script.
+
 ## [2026-10-03] - Hydration Mismatch Resolution & 100% Automated Test Suite Verification
 - **Hydration Error Resolution**: Resolved Next.js SSR/Client hydration error (`bis_skin_checked="1"`) caused by browser extensions (e.g. Bitdefender, privacy extensions) injecting attributes into DOM nodes before React hydration by applying `suppressHydrationWarning` on `<html lang="en">`, `<body>`, and `<main>` root shells across `app/layout.tsx`, `app/page.tsx`, and `app/login/page.tsx`.
 - **Installed Testing Skill**: Added and configured `anthropics/skills@webapp-testing` with headless Playwright automation.

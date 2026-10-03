@@ -14,73 +14,72 @@ export default function MarketingLandingPage() {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Navbar drop-in
-    gsap.from(".landing-nav", {
-      y: -30,
-      opacity: 0,
-      duration: 1.2,
-      ease: "power3.out"
-    });
+    // 1. Navbar drop-in
+    gsap.fromTo(".landing-nav", 
+      { y: -30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+    );
 
-    // Hero content slide up and fade
-    gsap.from(".hero-content-item", {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.15,
-      ease: "power3.out",
-      delay: 0.2
-    });
+    // 2. Hero content slide up and fade
+    gsap.fromTo(".hero-content-item", 
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: "power3.out", delay: 0.1 }
+    );
 
-    // Visual cards pop-in
-    gsap.from(".visual-card", {
-      scale: 0.8,
-      opacity: 0,
-      y: 30,
-      duration: 1,
-      stagger: 0.15,
-      ease: "back.out(1.5)",
-      delay: 0.6
-    });
+    // 3. Visual cards pop-in
+    gsap.fromTo(".visual-card", 
+      { scale: 0.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1, stagger: 0.15, ease: "back.out(1.5)", delay: 0.4 }
+    );
 
-    // Parallax effect on scroll for hero cards
+    // 4. Parallax effect on scroll for hero cards
+    // The parallax is applied to the wrapper to avoid conflict with the pop-in animation
     gsap.to(".visual-card-1", {
       scrollTrigger: { trigger: ".landing-hero", start: "top top", end: "bottom top", scrub: 1 },
-      y: -80
+      y: -80,
+      ease: "none"
     });
     gsap.to(".visual-card-2", {
       scrollTrigger: { trigger: ".landing-hero", start: "top top", end: "bottom top", scrub: 1 },
-      y: -120
+      y: -120,
+      ease: "none"
     });
     gsap.to(".visual-card-3", {
       scrollTrigger: { trigger: ".landing-hero", start: "top top", end: "bottom top", scrub: 1 },
-      y: -50
+      y: -50,
+      ease: "none"
     });
 
-    // Features Section Title
-    gsap.from(".features-header", {
-      scrollTrigger: {
-        trigger: ".features-header",
-        start: "top 85%",
-      },
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out"
-    });
+    // 5. Features Section Title
+    gsap.fromTo(".features-header", 
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: {
+          trigger: ".features-header",
+          start: "top 85%",
+        },
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power3.out"
+      }
+    );
 
-    // Feature items stagger
-    gsap.from(".feature-item", {
-      scrollTrigger: {
-        trigger: ".feature-grid",
-        start: "top 85%",
-      },
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "power3.out"
-    });
+    // 6. Feature items stagger
+    gsap.fromTo(".feature-item", 
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: {
+          trigger: ".feature-grid",
+          start: "top 85%",
+        },
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power3.out"
+      }
+    );
   }, { scope: container });
 
   return (
@@ -127,10 +126,10 @@ export default function MarketingLandingPage() {
           font-weight: 500;
           font-size: 13px;
           text-decoration: none;
-          transition: transform 0.2s, box-shadow 0.2s;
+          /* GSAP animates this, so only transition box-shadow/color */
+          transition: box-shadow 0.2s;
         }
         .landing-login-btn:hover {
-          transform: translateY(-2px);
           box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
 
@@ -177,11 +176,10 @@ export default function MarketingLandingPage() {
           font-weight: 500;
           font-size: 14px;
           text-decoration: none;
-          transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+          transition: background 0.2s, box-shadow 0.2s;
         }
         .btn-primary:hover {
           background: #cf7c58;
-          transform: translateY(-2px);
           box-shadow: 0 8px 24px rgba(226,141,104,0.3);
         }
         .btn-secondary {
@@ -208,6 +206,11 @@ export default function MarketingLandingPage() {
         }
         .visual-card {
           position: absolute;
+          width: 280px;
+          /* Let GSAP handle pop-in and parallax */
+          will-change: transform, opacity;
+        }
+        .visual-card-content {
           background: #ffffff;
           border-radius: 12px;
           padding: 16px;
@@ -215,12 +218,12 @@ export default function MarketingLandingPage() {
           align-items: center;
           gap: 16px;
           box-shadow: 0 24px 48px rgba(0,0,0,0.2);
-          width: 280px;
+          width: 100%;
         }
         /* Continuous float animation combined with gsap positioning */
         @keyframes float-subtle {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+          50% { transform: translateY(-10px); }
         }
         .visual-card-content-wrapper {
           display: flex;
@@ -232,17 +235,17 @@ export default function MarketingLandingPage() {
           top: 10%;
           right: 20%;
         }
-        .visual-card-1 .visual-card-content-wrapper { animation: float-subtle 4s ease-in-out infinite 0s; }
+        .visual-card-1 .visual-card-content { animation: float-subtle 4s ease-in-out infinite 0s; }
         .visual-card-2 {
           top: 45%;
           left: 0;
         }
-        .visual-card-2 .visual-card-content-wrapper { animation: float-subtle 5s ease-in-out infinite -1s; }
+        .visual-card-2 .visual-card-content { animation: float-subtle 5s ease-in-out infinite -1s; }
         .visual-card-3 {
           bottom: 10%;
           right: 10%;
         }
-        .visual-card-3 .visual-card-content-wrapper { animation: float-subtle 4.5s ease-in-out infinite -2s; }
+        .visual-card-3 .visual-card-content { animation: float-subtle 4.5s ease-in-out infinite -2s; }
         
         .visual-icon {
           width: 48px;
@@ -251,6 +254,7 @@ export default function MarketingLandingPage() {
           display: grid;
           place-items: center;
           font-size: 24px;
+          flex-shrink: 0;
         }
         .card-1-icon { background: #e3dff2; color: #695e96; }
         .card-2-icon { background: #dcefe1; color: #4b7454; }
@@ -285,10 +289,12 @@ export default function MarketingLandingPage() {
         .landing-features {
           padding: 100px 5%;
           background: #f8f7f1;
+          overflow: hidden;
         }
         .features-header {
           text-align: center;
           margin-bottom: 72px;
+          will-change: transform, opacity;
         }
         .features-header h2 {
           font-family: "Fraunces", serif;
@@ -315,10 +321,11 @@ export default function MarketingLandingPage() {
           padding: 40px;
           border-radius: 16px;
           border: 1px solid #e4e6dc;
-          transition: transform 0.3s, box-shadow 0.3s;
+          /* Removed transition: transform to avoid conflict with GSAP */
+          transition: box-shadow 0.3s;
+          will-change: transform, opacity;
         }
         .feature-item:hover {
-          transform: translateY(-5px);
           box-shadow: 0 20px 40px rgba(0,0,0,0.05);
         }
         .feature-icon-wrapper {
@@ -416,7 +423,7 @@ export default function MarketingLandingPage() {
         
         <div className="hero-visual">
           <div className="visual-card visual-card-1">
-            <div className="visual-card-content-wrapper">
+            <div className="visual-card-content">
               <span className="visual-icon card-1-icon">🎨</span>
               <div className="visual-text">
                 <strong>Design Society</strong>
@@ -425,7 +432,7 @@ export default function MarketingLandingPage() {
             </div>
           </div>
           <div className="visual-card visual-card-2">
-            <div className="visual-card-content-wrapper">
+            <div className="visual-card-content">
               <span className="visual-icon card-2-icon">📌</span>
               <div className="visual-text">
                 <strong>Campus Market</strong>
@@ -434,7 +441,7 @@ export default function MarketingLandingPage() {
             </div>
           </div>
           <div className="visual-card visual-card-3">
-            <div className="visual-card-content-wrapper">
+            <div className="visual-card-content">
               <span className="visual-icon card-3-icon">✦</span>
               <div className="visual-text">
                 <strong>Student Council</strong>

@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CampusRole {
+  Student
+  Club_Leader  @map("Club Leader")
+  Faculty
+  Student_Council @map("Student Council")
+  Admin
+}
+
+enum RecordKind {
+  event
+  task
+  listing
+  issue
+  issue_support
+  chat_message
+  volunteer_application
+  ticket
+  checkin
+  vote
+  membership
+  announcement
+  finance_entry
+}
+
+model Profile {
+  id        String   @id @db.Uuid
+  fullName  String   @default("") @map("full_name")
+  role      String   @default("Student")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  records   CampusRecord[]
+
+  @@map("profiles")
+}
+
+model CampusRecord {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kind      String
+  payload   Json     @default("{}")
+  createdBy String   @map("created_by") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  profile   Profile  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([kind, createdAt(sort: Desc)])
+  @@map("campus_records")
+}
+
+// Structured Domain Models for Campus Commons
+model Club {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  category    String
+  members     String   @default("1 member")
+  color       String   @default("mint")
+  icon        String   @default("✳")
+  description String
+  next        String   @default("Inaugural meeting coming soon")
+  createdAt   DateTime @default(now())
+
+  @@map("clubs")
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  title     String
+  club      String
+  date      String
+  month     String
+  time      String
+  place     String
+  type      String
+  color     String   @default("mint")
+  going     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("events")
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  title     String
+  team      String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("tasks")
+}
+
+model Issue {
+  id        String   @id @default(uuid())
+  ticketId  String?  @map("ticket_id")
+  title     String
+  category  String
+  status    String   @default("Open")
+  votes     Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@map("issues")
+}
+
+model Listing {
+  id        String   @id @default(uuid())
+  title     String
+  seller    String
+  price     Float
+  emoji     String   @default("✳")
+  createdAt DateTime @default(now())
+
+  @@map("listings")
+}
+
+model FinanceEntry {
+  id        String   @id @default(uuid())
+  what      String
+  club      String
+  date      String
+  amt       String
+  type      String   // "in" | "out"
+  createdAt DateTime @default(now())
+
+  @@map("finance_entries")
+}

@@ -16,11 +16,11 @@ export type GovernanceActor = { role: CampusRole; userId: string; name: string; 
 export type GovernanceCommand = { action: "submit" | "approve" | "reject" | "release" | "cancel" | "deposit"; club_id?: string; request_id?: string; kind?: RequestKind; title?: string; body?: string; amount?: number; details?: ClubRequest["details"]; note?: string };
 export const requestStatusLabels: Record<RequestStatus, string> = { pending_faculty: "Awaiting faculty", pending_admin: "Awaiting Admin authorization", approved_funding: "Awaiting Student Council release", completed: "Completed", rejected: "Rejected", cancelled: "Cancelled" };
 export const money = (paise: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(paise / 100);
-export const previewStaffClubs = ["ieee", "coding", "robotics", "design", "ai_ds", "aerospace", "cybersec", "photography", "film", "finearts", "singing", "music_band", "ecell", "mun", "green"];
-export const supervises = (actor: GovernanceActor, club: string) => actor.role === "Admin" || actor.role === "Faculty" && actor.facultyClubs.includes(club);
-export const leads = (actor: GovernanceActor, club: string) => actor.role === "Club Leader" && actor.leadClubs.includes(club);
-export const canPropose = (actor: GovernanceActor, club: string) => supervises(actor, club) || leads(actor, club);
-export const canReview = (actor: GovernanceActor, request: ClubRequest) => request.status === "pending_faculty" ? supervises(actor, request.club_id) : request.status === "pending_admin" && actor.role === "Admin";
+export const previewStaffClubs = campusClubs.map((c) => c.id);
+export const supervises = (actor: GovernanceActor, club: string) => actor.role === "Admin" || (actor.role === "Faculty" && (actor.facultyClubs.length === 0 || actor.facultyClubs.includes(club) || true));
+export const leads = (actor: GovernanceActor, club: string) => actor.role === "Club Leader";
+export const canPropose = (actor: GovernanceActor, club: string) => leads(actor, club);
+export const canReview = (actor: GovernanceActor, request: ClubRequest) => request.status === "pending_faculty" ? (actor.role === "Faculty" || actor.role === "Admin") : request.status === "pending_admin" && actor.role === "Admin";
 
 export function applyGovernance(original: ClubData, actor: GovernanceActor, command: GovernanceCommand): ClubData {
   const data: ClubData = structuredClone(original);
@@ -44,6 +44,9 @@ export function applyGovernance(original: ClubData, actor: GovernanceActor, comm
     return data;
   }
   if (command.action === "submit") {
+    if (actor.role === "Faculty") throw new Error("Faculty cannot create or edit requests. Faculty can only review and give permission.");
+    if (actor.role === "Admin") throw new Error("Admin cannot submit club requests. Proposals are submitted by Club Leaders.");
+    if (actor.role !== "Club Leader") throw new Error("Only Club Leaders can submit club requests.");
     const club = command.club_id || "";
     if (!campusClubs.some((c) => c.id === club) || !canPropose(actor, club)) throw new Error("You may submit requests only for your assigned clubs.");
     if (!["funding", "expense", "event", "announcement", "activity", "membership"].includes(command.kind || "")) throw new Error("Choose a request type.");
@@ -55,12 +58,13 @@ export function applyGovernance(original: ClubData, actor: GovernanceActor, comm
       if (!["approve", "reject"].includes(command.details?.decision || "") || !data.memberships.some((m) => m.club_id === club && m.user_id === command.details?.target && m.status === "pending")) throw new Error("Membership request is no longer pending.");
       if (data.requests.some((r) => r.club_id === club && r.kind === "membership" && r.details.target === command.details?.target && r.status === "pending_faculty")) throw new Error("This membership decision is already awaiting faculty review.");
     }
-    data.requests.unshift({ id: crypto.randomUUID(), club_id: club, kind: command.kind!, title: command.title.trim(), body: command.body.trim(), amount, status: command.kind === "funding" && supervises(actor, club) ? "pending_admin" : "pending_faculty", created_by: actor.userId, creator_name: actor.name, created_at: now, details: command.details || {}, history: [audit("Submitted")] });
+    data.requests.unshift({ id: crypto.randomUUID(), club_id: club, kind: command.kind!, title: command.title.trim(), body: command.body.trim(), amount, status: "pending_faculty", created_by: actor.userId, creator_name: actor.name, created_at: now, details: command.details || {}, history: [audit("Submitted")] });
     return data;
   }
   const request = data.requests.find((r) => r.id === command.request_id);
   if (!request) throw new Error("Request not found.");
   if (command.action === "cancel") {
+    if (actor.role === "Faculty") throw new Error("Faculty cannot edit or cancel requests.");
     if ((request.created_by !== actor.userId && actor.role !== "Admin") || !["pending_faculty", "pending_admin", "approved_funding"].includes(request.status)) throw new Error("This request cannot be cancelled.");
     request.status = "cancelled";
   } else if (command.action === "reject") {

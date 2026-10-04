@@ -600,20 +600,6 @@ export default function LoginPage() {
             {error && <p className="login-feedback error">{error}</p>}
             {notice && <p className="login-feedback success">{notice}</p>}
 
-            {/* Interactive Role Switcher Pills Bar */}
-            <div className="role-pills" role="tablist" aria-label="Select campus role">
-              {(["Student", "Club Leader", "Faculty", "Student Council", "Admin"] as CampusRole[]).map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  className={`role-pill-btn ${previewRole === r ? "active" : ""}`}
-                  onClick={() => setPreviewRole(r)}
-                >
-                  {ROLES_INFO[r].icon} {r}
-                </button>
-              ))}
-            </div>
-
             {/* Standard Preview Box matching automated test bindings */}
             <div className="preview-box">
               <div className="preview-title">

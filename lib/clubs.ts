@@ -2026,7 +2026,7 @@ export const emptyClubData = (): ClubData => ({ assignments: [], staffProfiles: 
 
 export const previewClubData = (): ClubData => ({
   ...emptyClubData(),
-  assignments: ["ieee", "coding", "robotics", "design", "ai_ds", "aerospace", "cybersec", "photography", "film", "finearts", "singing", "music_band", "ecell", "mun", "green"].flatMap((club_id) => ([
+  assignments: campusClubs.map((c) => c.id).flatMap((club_id) => ([
     { club_id, user_id: "preview:Faculty", role: "Faculty" as const },
     { club_id, user_id: "preview:Club Leader", role: "Club Leader" as const }
   ])),
@@ -2036,7 +2036,7 @@ export const previewClubData = (): ClubData => ({
   ],
   accounts: [
     { id: "council", balance: 25_000_000 },
-    ...campusClubs.map((c) => ({ id: c.id, balance: 150_000 }))
+    ...campusClubs.map((c) => ({ id: c.id, balance: 0 }))
   ],
   ledger: [
     { id: "preview-opening", account_id: "council", amount: 25_000_000, kind: "receipt", description: "Preview opening treasury", request_id: null, created_by: "preview:Student Council", created_at: "2026-10-03T00:00:00Z" }

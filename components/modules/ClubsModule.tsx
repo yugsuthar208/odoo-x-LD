@@ -21,7 +21,7 @@ export function ClubsModule({
 }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("ALL CLUBS");
-  const [clubTab, setClubTab] = useState<"overview" | "projects" | "events" | "announcements" | "members">("overview");
+  const [clubTab, setClubTab] = useState<"overview" | "projects" | "events" | "announcements" | "members" | "requests">("overview");
 
   const club = campusClubs.find((c) => c.id === selectedClub);
   const pending = w.data.memberships.filter((m) => m.user_id === w.userId && m.status === "pending");
@@ -155,7 +155,14 @@ export function ClubsModule({
                 {w.status(club.id) === "approved" && (
                   <span className="club-status-pill approved">✓ Member · Full access</span>
                 )}
-                {w.manages(club.id) && <span className="club-status-pill admin">★ Club admin</span>}
+                {role === "Club Leader" && <span className="club-status-pill leader-pill">★ Club Leader</span>}
+                {role === "Faculty" && <span className="club-status-pill advisor-pill">⚖ Faculty Advisor</span>}
+                {role !== "Club Leader" && role !== "Faculty" && w.manages(club.id) && <span className="club-status-pill admin">★ Club admin</span>}
+                {(role === "Club Leader" || role === "Faculty" || w.staff(club.id)) && (
+                  <button className="btn-action requests-shortcut-btn" onClick={() => setClubTab("requests")}>
+                    📋 Requests & Approvals ({w.data.requests.filter((r) => r.club_id === club.id).length})
+                  </button>
+                )}
                 <button className="btn-refresh" onClick={() => void w.refresh()} disabled={w.busy}>
                   ↻ Refresh
                 </button>
@@ -195,6 +202,14 @@ export function ClubsModule({
             >
               Leadership & Members ({w.data.memberships.filter((m) => m.club_id === club.id && m.status === "approved").length})
             </button>
+            {(role === "Club Leader" || role === "Faculty" || role === "Admin" || role === "Student Council" || w.staff(club.id)) && (
+              <button
+                className={`club-tab-btn club-tab-requests ${clubTab === "requests" ? "active" : ""}`}
+                onClick={() => setClubTab("requests")}
+              >
+                📋 Requests & Approvals ({w.data.requests.filter((r) => r.club_id === club.id).length})
+              </button>
+            )}
           </div>
 
           {/* Tab 1: Overview */}
@@ -260,6 +275,36 @@ export function ClubsModule({
                     </div>
                   </div>
                 </section>
+
+                {/* Requests & Approvals Bento Card */}
+                {(role === "Club Leader" || role === "Faculty" || w.staff(club.id)) && (
+                  <section className="club-panel bento-card leader-workspace-bento">
+                    <span className="eyebrow">{role === "Faculty" ? "FACULTY SUPERVISION" : "CLUB LEADER WORKSPACE"}</span>
+                    <h2>Requests & Approvals</h2>
+                    <p>
+                      {role === "Faculty"
+                        ? `Supervise ${club.name}. Review student activity and funding proposals to grant faculty permission.`
+                        : `Manage all activity, budget, event, and announcement proposals for ${club.name}.`}
+                    </p>
+                    <div className="leader-quick-stats">
+                      <div className="stat-pill">
+                        <small>TOTAL REQUESTS</small>
+                        <b>{w.data.requests.filter((r) => r.club_id === club.id).length}</b>
+                      </div>
+                      <div className="stat-pill">
+                        <small>AWAITING FACULTY</small>
+                        <b>{w.data.requests.filter((r) => r.club_id === club.id && r.status === "pending_faculty").length}</b>
+                      </div>
+                      <div className="stat-pill">
+                        <small>COMPLETED</small>
+                        <b>{w.data.requests.filter((r) => r.club_id === club.id && r.status === "completed").length}</b>
+                      </div>
+                    </div>
+                    <button className="btn-action join-primary-btn mt-3" onClick={() => setClubTab("requests")}>
+                      Open Requests & Approvals <span>↗</span>
+                    </button>
+                  </section>
+                )}
               </div>
 
               {/* FAQs */}
@@ -538,7 +583,14 @@ export function ClubsModule({
                 </ul>
               </section>
 
-              {w.staff(club.id) && <GovernanceModule key={club.id} workspace={w} clubId={club.id} />}
+              {/* Tab 6: Requests & Approvals */}
+              {clubTab === "requests" && (
+                <div className="club-tab-content">
+                  <section className="club-panel club-governance-panel">
+                    <GovernanceModule key={club.id} workspace={w} clubId={club.id} />
+                  </section>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -633,14 +685,18 @@ export function ClubsModule({
                   </div>
 
                   <p className="club-status">
-                    {w.status(c.id) === "approved"
+                    {role === "Club Leader"
+                      ? `★ Club Leader · ${w.data.requests.filter((r) => r.club_id === c.id).length} requests & approvals`
+                      : role === "Faculty"
+                      ? `⚖ Faculty Advisor · ${w.data.requests.filter((r) => r.club_id === c.id && r.status === "pending_faculty").length} awaiting permission`
+                      : w.status(c.id) === "approved"
                       ? "✓ Member"
                       : w.status(c.id) === "pending"
                       ? "⏳ Request pending"
                       : w.status(c.id) === "rejected"
                       ? "✕ Request rejected"
                       : "Open for applications"}
-                    {w.manages(c.id) ? " · Club admin" : ""}
+                    {role !== "Club Leader" && role !== "Faculty" && w.manages(c.id) ? " · Club admin" : ""}
                   </p>
 
                   <button className="join-button" onClick={() => openClub(c.id)}>

@@ -47,6 +47,9 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
       const existingRsvps = new Set((parsed.rsvps || []).map((r: { event_id: string; user_id: string }) => `${r.event_id}:${r.user_id}`));
       const rsvps = [...(parsed.rsvps || []), ...defaults.rsvps.filter((r) => !existingRsvps.has(`${r.event_id}:${r.user_id}`))];
 
+      const existingAssignmentKeys = new Set((parsed.assignments || []).map((a: { club_id: string; user_id: string; role: string }) => `${a.club_id}:${a.user_id}:${a.role}`));
+      const assignments = [...(parsed.assignments || defaults.assignments), ...defaults.assignments.filter((a) => !existingAssignmentKeys.has(`${a.club_id}:${a.user_id}:${a.role}`))];
+
       return {
         ...defaults,
         ...parsed,
@@ -55,6 +58,7 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
         announcements,
         memberships,
         rsvps,
+        assignments,
         ledger: parsed.ledger || defaults.ledger,
       };
     } catch {
@@ -116,12 +120,18 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
     return () => { generation.current++; window.clearInterval(timer); window.removeEventListener("focus", reload); window.removeEventListener("storage", reload); };
   }, [ready, role, refresh]);
 
-  const actor: GovernanceActor = { role, userId, name, leadClubs: preview ? data.assignments.filter((a) => a.user_id === userId && a.role === "Club Leader").map((a) => a.club_id) : data.adminClubs, facultyClubs: preview ? data.assignments.filter((a) => a.user_id === userId && a.role === "Faculty").map((a) => a.club_id) : data.facultyClubs };
+  const actor: GovernanceActor = {
+    role,
+    userId,
+    name,
+    leadClubs: role === "Club Leader" ? campusClubs.map((c) => c.id) : (preview ? data.assignments.filter((a) => a.user_id === userId && a.role === "Club Leader").map((a) => a.club_id) : data.adminClubs),
+    facultyClubs: role === "Faculty" ? campusClubs.map((c) => c.id) : (preview ? data.assignments.filter((a) => a.user_id === userId && a.role === "Faculty").map((a) => a.club_id) : data.facultyClubs),
+  };
   const manages = (clubId: string) => supervises(actor, clubId);
-  const leads = (clubId: string) => isLeader(actor, clubId);
-  const staff = (clubId: string) => canPropose(actor, clubId);
+  const leads = (clubId: string) => role === "Club Leader" || isLeader(actor, clubId);
+  const staff = (clubId: string) => role === "Club Leader" || canPropose(actor, clubId);
   const status = (clubId: string) => data.memberships.find((m) => m.club_id === clubId && m.user_id === userId)?.status;
-  const canRead = (clubId: string) => status(clubId) === "approved" || staff(clubId);
+  const canRead = (clubId: string) => status(clubId) === "approved" || staff(clubId) || role === "Club Leader" || role === "Faculty" || role === "Admin" || role === "Student Council";
 
   async function mutate(local: (current: ClubData) => ClubData, remote: () => PromiseLike<{ error: { message: string } | null }>) {
     if (lock.current || loading || !ready) return false;

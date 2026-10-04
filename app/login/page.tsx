@@ -1,12 +1,17 @@
 "use client";
 
-import { FormEvent, useState, useEffect, useRef } from "react";
+import { FormEvent, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getSupabase } from "../../lib/supabase";
 import type { CampusRole } from "../../lib/supabase/types";
 import { campusClubs } from "../../lib/clubs";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 interface RoleMetadata {
   title: string;
@@ -169,12 +174,8 @@ export default function LoginPage() {
 
   const passwordStrength = getPasswordStrength(password);
 
-  // GSAP ScrollTrigger Animations
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
+  // GSAP ScrollTrigger Animations with useGSAP and safe fromTo
+  useGSAP(() => {
     // Reading progress line
     gsap.to(".login-scroll-progress-fill", {
       scaleX: 1,
@@ -196,60 +197,71 @@ export default function LoginPage() {
     });
 
     // Staggered reveal for Bento items
-    const bentoItems = document.querySelectorAll(".bento-reveal-item");
+    const bentoItems = gsap.utils.toArray<HTMLElement>(".bento-reveal-item");
     if (bentoItems.length > 0) {
-      gsap.from(bentoItems, {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".login-ecosystem-section",
-          start: "top 80%",
-          once: true,
-        },
-      });
+      gsap.fromTo(
+        bentoItems,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: "power2.out",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: ".login-ecosystem-section",
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
     }
 
     // Staggered reveal for Role cards
-    const roleCards = document.querySelectorAll(".role-showcase-card");
+    const roleCards = gsap.utils.toArray<HTMLElement>(".role-showcase-card");
     if (roleCards.length > 0) {
-      gsap.from(roleCards, {
-        y: 45,
-        opacity: 0,
-        duration: 0.85,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".login-roles-section",
-          start: "top 80%",
-          once: true,
-        },
-      });
+      gsap.fromTo(
+        roleCards,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: "power2.out",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: ".login-roles-section",
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
     }
 
     // CTA card entrance
     const ctaCard = document.querySelector(".login-cta-card");
     if (ctaCard) {
-      gsap.from(ctaCard, {
-        scale: 0.96,
-        y: 35,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".login-cta-section",
-          start: "top 88%",
-          once: true,
-        },
-      });
+      gsap.fromTo(
+        ctaCard,
+        { scale: 0.97, y: 25, opacity: 0 },
+        {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          ease: "power2.out",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: ".login-cta-section",
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
     }
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  }, { scope: scrollWrapperRef });
 
   // Mouse Parallax for Hero Story Art
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -588,25 +600,28 @@ export default function LoginPage() {
             {error && <p className="login-feedback error">{error}</p>}
             {notice && <p className="login-feedback success">{notice}</p>}
 
-            {/* Interactive Role Switcher & Live Feature Preview */}
-            <div className="interactive-role-preview">
-              <div className="role-selector-header">
-                <span className="eyebrow" style={{ margin: 0 }}>EXPLORE A CAMPUS PERSPECTIVE</span>
-                <span style={{ font: "700 9px 'DM Mono', monospace", color: "#6a7366" }}>LIVE DEMO</span>
-              </div>
+            {/* Interactive Role Switcher Pills Bar */}
+            <div className="role-pills" role="tablist" aria-label="Select campus role">
+              {(["Student", "Club Leader", "Faculty", "Student Council", "Admin"] as CampusRole[]).map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  className={`role-pill-btn ${previewRole === r ? "active" : ""}`}
+                  onClick={() => setPreviewRole(r)}
+                >
+                  {ROLES_INFO[r].icon} {r}
+                </button>
+              ))}
+            </div>
 
-              {/* Quick interactive role pills */}
-              <div className="role-pills">
-                {(["Student", "Club Leader", "Faculty", "Student Council", "Admin"] as CampusRole[]).map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    className={`role-pill-btn ${previewRole === r ? "active" : ""}`}
-                    onClick={() => setPreviewRole(r)}
-                  >
-                    {ROLES_INFO[r].icon} {r}
-                  </button>
-                ))}
+            {/* Standard Preview Box matching automated test bindings */}
+            <div className="preview-box">
+              <div className="preview-title">
+                <span>✦</span>
+                <div>
+                  <b>Explore as a Campus Member</b>
+                  <small>Instant interactive demo with role-based permissions.</small>
+                </div>
               </div>
 
               {/* Dynamic Role Preview Card */}
@@ -622,23 +637,14 @@ export default function LoginPage() {
                   ))}
                 </div>
               </div>
-            </div>
 
-            {/* Standard Preview Box matching automated test bindings */}
-            <div className="preview-box">
-              <div className="preview-title">
-                <span>✦</span>
-                <div>
-                  <b>Just looking around?</b>
-                  <small>Explore the interactive live demo without an account.</small>
-                </div>
-              </div>
-
-              <label>
-                PREVIEW A ROLE
+              {/* Automated Test Compliant Dropdown */}
+              <label className="preview-select-row">
+                <span>SELECT ROLE</span>
                 <select
                   value={previewRole}
                   onChange={(e) => setPreviewRole(e.target.value as CampusRole)}
+                  aria-label="Select preview role"
                 >
                   <option>Student</option>
                   <option>Club Leader</option>
@@ -648,7 +654,9 @@ export default function LoginPage() {
                 </select>
               </label>
 
-              <button onClick={() => enterPreview()}>EXPLORE THE DEMO ↗</button>
+              <button type="button" onClick={() => enterPreview()}>
+                EXPLORE DEMO AS {previewRole.toUpperCase()} ↗
+              </button>
             </div>
 
             <p className="login-security">
@@ -858,7 +866,7 @@ export default function LoginPage() {
                   className="role-launch-btn"
                   onClick={() => enterPreview(roleKey)}
                 >
-                  TEST DRIVE AS {roleKey.toUpperCase()} ↗
+                  LAUNCH AS {roleKey === "Student Council" ? "COUNCIL" : roleKey.toUpperCase()} ↗
                 </button>
               </div>
             );

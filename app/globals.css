@@ -39,14 +39,13 @@
 .login-form input{height:48px;padding:0 14px;border-radius:8px;font-size:12px}
 .forgot-button{font-size:10px}
 .login-submit{height:49px;border-radius:8px;box-shadow:0 8px 18px #496c5026}
-.preview-box{margin-top:25px;padding:16px;border-radius:11px;background:#f1f2e9}
-.preview-title{gap:10px}
-.preview-title>span{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#f9e9df;font-size:17px}
-.preview-title b{font-size:16px}
-.preview-title small{font-size:9px}
-.preview-box>label{margin-top:15px;font-size:7px}
-.preview-box select{width:150px;padding:9px;border-radius:7px}
-.preview-box>button{margin-top:12px;padding:12px;border-radius:7px}
+.preview-box{margin-top:22px;padding:18px 20px;border-radius:16px;background:#f4f6ee;border:1px solid #e1e5da;box-shadow:0 4px 18px rgba(34,43,36,0.03)}
+.preview-title{display:flex;align-items:center;gap:12px}
+.preview-title>span{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#fdf5df;color:#a36538;font-size:16px;flex-shrink:0}
+.preview-title b{font-family:Fraunces,serif;font-size:16px;color:var(--ink);letter-spacing:-0.3px}
+.preview-title small{font-size:11px;color:#727a6f}
+.preview-box>button{width:100%;margin-top:14px;padding:13px 18px;border-radius:10px;border:1px solid #2f523c;background:#31513d;color:#ffffff;font:700 11px 'DM Mono',monospace;letter-spacing:0.8px;cursor:pointer;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 14px rgba(49,81,61,0.22)}
+.preview-box>button:hover{background:#254030;transform:translateY(-1px);box-shadow:0 6px 20px rgba(49,81,61,0.3)}
 .login-security{margin-top:16px;font-size:9px}
 @media(max-width:1120px){.login-shell{grid-template-columns:minmax(0,1fr) minmax(430px,.9fr)}.login-story{padding-left:48px;padding-right:48px}.login-story-copy h1{font-size:clamp(51px,6vw,78px)}}
 @media(max-width:760px){.login-shell{grid-template-columns:1fr}.login-story{min-height:390px;padding:22px 22px 18px}.login-story-copy{margin:37px 0 125px}.login-story-copy h1{font-size:43px;letter-spacing:-2px}.login-story-copy>p:last-of-type{max-width:300px;margin-top:11px;font-size:10px}.login-highlights{gap:6px;margin-top:17px}.login-highlights span{min-width:0;flex:1;padding:8px}.login-highlights b{font-size:17px}.login-highlights small{font-size:6px}.login-story-art{right:-35px;bottom:-305px;width:300px;height:330px;scale:.8}.login-panel{padding:30px 22px 38px}.login-card{max-width:470px}.login-card-topline{margin-bottom:22px}.login-card h2{font-size:40px}.login-form input{height:46px}}
@@ -1604,21 +1603,39 @@ small {
   color: #4a5c4c;
   font: 550 9px 'DM Mono', monospace;
 }
-.role-instant-btn {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #d5dfd1;
-  border-radius: 8px;
-  background: #eaf1e7;
-  color: #335d44;
-  font: 600 11px 'DM Mono', monospace;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.preview-select-row {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e3e7dc;
 }
-.role-instant-btn:hover {
-  background: #dde8d9;
-  transform: translateY(-1px);
+.preview-select-row span {
+  font: 700 9px 'DM Mono', monospace;
+  color: #6d7568;
+  letter-spacing: 0.6px;
+}
+.preview-select-row select {
+  padding: 7px 12px;
+  border: 1px solid #d4dbcc;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #31513d;
+  font: 600 11px 'DM Sans', sans-serif;
+  cursor: pointer;
+  outline: none;
+}
+.preview-select-row select:focus {
+  border-color: #31513d;
+  box-shadow: 0 0 0 2px rgba(49, 81, 61, 0.15);
+}
+
+/* Base Card Visibilities & Animations Safe Guard */
+.bento-reveal-item,
+.role-showcase-card,
+.login-cta-card {
+  opacity: 1;
 }
 
 /* Hero Scroll Down Hint */
@@ -1658,14 +1675,14 @@ small {
    ========================================================================= */
 
 .login-ecosystem-section {
-  padding: 120px 32px 90px;
+  padding: 85px 32px 75px;
   max-width: 1240px;
   margin: 0 auto;
 }
 .section-header-centered {
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 54px;
+  margin: 0 auto 40px;
 }
 .section-header-centered .eyebrow {
   color: #4f6e56;
@@ -2003,20 +2020,26 @@ small {
 }
 .role-launch-btn {
   width: 100%;
-  padding: 12px;
+  padding: 10px 8px;
   border-radius: 10px;
   border: 1px solid #d5ded1;
   background: #eef4ec;
   color: #325841;
-  font: 600 11px 'DM Mono', monospace;
-  letter-spacing: 0.5px;
+  font: 700 10px 'DM Mono', monospace;
+  letter-spacing: 0.4px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
 }
 .role-launch-btn:hover {
   background: #31513d;
   color: white;
   border-color: #31513d;
+  transform: translateY(-1px);
 }
 
 /* =========================================================================

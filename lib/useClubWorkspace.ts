@@ -69,28 +69,30 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
   const fetchData = useCallback(async (): Promise<ClubData> => {
     if (preview) return readPreview();
     const db = getSupabase();
-    if (!db) throw new Error("Supabase is not configured.");
-    const results = await Promise.all([
-      db.from("club_memberships").select("club_id,user_id,display_name,status"),
-      db.from("club_events").select("id,club_id,title,starts_at,location"),
-      db.from("club_announcements").select("id,club_id,title,body").order("created_at", { ascending: false }),
-      db.from("club_rsvps").select("event_id,user_id,club_id"),
-      db.from("club_admins").select("club_id,user_id"),
-      db.from("club_faculty").select("club_id,user_id"),
-      db.from("club_requests").select("*").order("created_at", { ascending: false }),
-      db.from("club_accounts").select("id,balance"),
-      db.from("club_ledger").select("*").order("created_at", { ascending: false }),
-      db.from("profiles").select("id,full_name,role").in("role", ["Faculty", "Club Leader"]),
-    ]);
-    const failure = results.find((result) => result.error);
-    if (failure?.error) {
-      if (failure.error.code === "PGRST205" || failure.error.message?.includes("schema cache") || failure.error.message?.includes("does not exist")) {
-        console.warn("Supabase club tables not found; using local workspace state.");
+    if (!db) return readPreview();
+    try {
+      const results = await Promise.all([
+        db.from("club_memberships").select("club_id,user_id,display_name,status"),
+        db.from("club_events").select("id,club_id,title,starts_at,location"),
+        db.from("club_announcements").select("id,club_id,title,body").order("created_at", { ascending: false }),
+        db.from("club_rsvps").select("event_id,user_id,club_id"),
+        db.from("club_admins").select("club_id,user_id"),
+        db.from("club_faculty").select("club_id,user_id"),
+        db.from("club_requests").select("*").order("created_at", { ascending: false }),
+        db.from("club_accounts").select("id,balance"),
+        db.from("club_ledger").select("*").order("created_at", { ascending: false }),
+        db.from("profiles").select("id,full_name,role").in("role", ["Faculty", "Club Leader"]),
+      ]);
+      const failure = results.find((result) => result.error);
+      if (failure?.error) {
+        console.warn("Supabase club data query returned error; falling back to local preview state:", failure.error);
         return readPreview();
       }
-      throw new Error(`Club data unavailable: ${failure.error.message}. Apply supabase/clubs.sql and supabase/governance.sql if this feature is not installed.`);
+      return { memberships: results[0].data || [], events: results[1].data || [], announcements: results[2].data || [], rsvps: results[3].data || [], adminClubs: (results[4].data || []).filter((row) => row.user_id === profileId).map((row) => row.club_id), facultyClubs: (results[5].data || []).filter((row) => row.user_id === profileId).map((row) => row.club_id), requests: results[6].data || [], accounts: results[7].data || [], ledger: results[8].data || [], assignments: [...(results[4].data || []).map((row) => ({ ...row, role: "Club Leader" })), ...(results[5].data || []).map((row) => ({ ...row, role: "Faculty" }))], staffProfiles: results[9].data || [], autoAccept: false } as ClubData;
+    } catch (err) {
+      console.warn("Failed to fetch club workspace from Supabase; falling back to local preview state:", err);
+      return readPreview();
     }
-    return { memberships: results[0].data || [], events: results[1].data || [], announcements: results[2].data || [], rsvps: results[3].data || [], adminClubs: (results[4].data || []).filter((row) => row.user_id === profileId).map((row) => row.club_id), facultyClubs: (results[5].data || []).filter((row) => row.user_id === profileId).map((row) => row.club_id), requests: results[6].data || [], accounts: results[7].data || [], ledger: results[8].data || [], assignments: [...(results[4].data || []).map((row) => ({ ...row, role: "Club Leader" })), ...(results[5].data || []).map((row) => ({ ...row, role: "Faculty" }))], staffProfiles: results[9].data || [], autoAccept: false } as ClubData;
   }, [preview, profileId]);
 
   const refresh = useCallback(async () => {

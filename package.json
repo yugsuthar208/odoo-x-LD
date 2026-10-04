@@ -24,6 +24,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "pg": "^8.23.1",
     "prisma": "^6.19.3",
     "typescript": "^5"
   }

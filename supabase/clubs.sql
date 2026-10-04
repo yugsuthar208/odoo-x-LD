@@ -171,6 +171,62 @@ insert into public.campus_clubs(id,name) values ('green','Green Collective') on 
 insert into public.club_events(id,club_id,title,starts_at,location) values ('green-welcome','green','Campus garden morning','2026-10-24 16:00:00+05:30','Community Garden') on conflict (id) do nothing;
 insert into public.club_announcements(club_id,title,body) select 'green','Welcome to Green Collective','Gloves and tools are provided for our next garden morning.' where not exists (select 1 from public.club_announcements where club_id='green' and title='Welcome to Green Collective');
 
+insert into public.campus_clubs(id,name) values ('ai_ds','AI & Data Science') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('ai_ds-welcome','ai_ds','Transformer models from scratch','2026-10-25 18:00:00+05:30','Ramanujan Lab') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'ai_ds','Welcome to AI & Data Science','Join our paper discussion on state-of-the-art vision transformers this Wednesday.' where not exists (select 1 from public.club_announcements where club_id='ai_ds' and title='Welcome to AI & Data Science');
+
+insert into public.campus_clubs(id,name) values ('aerospace','Aerospace & Rocketry') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('aerospace-welcome','aerospace','Solid motor static fire test','2026-10-25 10:00:00+05:30','North Campus Hangar') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'aerospace','Welcome to Aerospace & Rocketry','Safety briefing for this weekend''s static motor burn starts Thursday at 5 PM.' where not exists (select 1 from public.club_announcements where club_id='aerospace' and title='Welcome to Aerospace & Rocketry');
+
+insert into public.campus_clubs(id,name) values ('cybersec','Cybersecurity') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('cybersec-welcome','cybersec','Web exploit & SQL injection clinic','2026-10-24 18:00:00+05:30','Shannon Hall Sandbox') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'cybersec','Welcome to Cybersecurity','Bring your laptop with Kali Linux installed for this Friday''s web exploitation clinic.' where not exists (select 1 from public.club_announcements where club_id='cybersec' and title='Welcome to Cybersecurity');
+
+insert into public.campus_clubs(id,name) values ('film','Film Society') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('film-welcome','film','48-Hour Film screening night','2026-10-24 18:30:00+05:30','Black Box Screening Room') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'film','Welcome to Film Society','Popcorn provided! Join us for student short film premieres this Friday night.' where not exists (select 1 from public.club_announcements where club_id='film' and title='Welcome to Film Society');
+
+insert into public.campus_clubs(id,name) values ('finearts','Fine Arts') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('finearts-welcome','finearts','Plein air watercolor afternoon','2026-10-24 15:00:00+05:30','Botanical Garden') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'finearts','Welcome to Fine Arts','Plein air watercolor kits and boards will be provided at the Botanical Garden pond.' where not exists (select 1 from public.club_announcements where club_id='finearts' and title='Welcome to Fine Arts');
+
+insert into public.campus_clubs(id,name) values ('lit','Literary Society') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('lit-welcome','lit','Spoken word & open mic night','2026-10-24 18:00:00+05:30','Library Amphitheater') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'lit','Welcome to Literary Society','Step up to the mic or listen in; poetry, flash fiction, and monologues welcome.' where not exists (select 1 from public.club_announcements where club_id='lit' and title='Welcome to Literary Society');
+
+insert into public.campus_clubs(id,name) values ('fashion','Fashion & Apparel') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('fashion-welcome','fashion','Denim upcycling & patchwork clinic','2026-10-24 16:00:00+05:30','Textile Studio 3') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'fashion','Welcome to Fashion & Apparel','Bring an old pair of jeans; sewing machines and embroidery threads will be ready.' where not exists (select 1 from public.club_announcements where club_id='fashion' and title='Welcome to Fashion & Apparel');
+
+insert into public.campus_clubs(id,name) values ('music_band','Music Band') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('music_band-welcome','music_band','Open jam & band mixer night','2026-10-24 18:00:00+05:30','Jam Studio 3') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'music_band','Welcome to Music Band','Bring your guitar or sticks; amps and drums are hooked up and ready to jam.' where not exists (select 1 from public.club_announcements where club_id='music_band' and title='Welcome to Music Band');
+
+insert into public.campus_clubs(id,name) values ('culinary','Culinary Arts') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('culinary-welcome','culinary','Artisan sourdough & focaccia workshop','2026-10-25 11:00:00+05:30','Culinary Kitchen 2') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'culinary','Welcome to Culinary Arts','Flour and proofing baskets ready! Learn dough shaping and rosemary focaccia baking this Saturday.' where not exists (select 1 from public.club_announcements where club_id='culinary' and title='Welcome to Culinary Arts');
+
+insert into public.campus_clubs(id,name) values ('philosophy','Philosophy') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('philosophy-welcome','philosophy','Socratic dialogue on AI minds & ethics','2026-10-24 18:00:00+05:30','Humanities Quad Room 101') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'philosophy','Welcome to Philosophy','Can machines suffer? Join our Socratic circle on digital minds and ethical moral patienthood.' where not exists (select 1 from public.club_announcements where club_id='philosophy' and title='Welcome to Philosophy');
+
+insert into public.campus_clubs(id,name) values ('ecell','E-Cell') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('ecell-welcome','ecell','Pitch deck teardown & VC mixer','2026-10-24 17:30:00+05:30','Innovation Tower Lounge') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'ecell','Welcome to E-Cell','Present your 3-minute startup elevator pitch to visiting angel investors for immediate feedback.' where not exists (select 1 from public.club_announcements where club_id='ecell' and title='Welcome to E-Cell');
+
+insert into public.campus_clubs(id,name) values ('mun','Model UN & Diplomacy') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('mun-welcome','mun','UN Security Council crisis simulation','2026-10-24 17:00:00+05:30','Tagore Diplomatic Room 201') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'mun','Welcome to Model UN','Country country allotments for the crisis simulation are posted; study your dossier.' where not exists (select 1 from public.club_announcements where club_id='mun' and title='Welcome to Model UN');
+
+insert into public.campus_clubs(id,name) values ('social_service','Social Impact') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('social_service-welcome','social_service','Weekend school tutoring & literacy camp','2026-10-25 09:00:00+05:30','Campus Classrooms 101-105') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'social_service','Welcome to Social Impact','Join us this Saturday morning to tutor local kids in math and reading; lesson kits provided.' where not exists (select 1 from public.club_announcements where club_id='social_service' and title='Welcome to Social Impact');
+
+insert into public.campus_clubs(id,name) values ('wellness','Mind & Wellness') on conflict (id) do update set name = excluded.name;
+insert into public.club_events(id,club_id,title,starts_at,location) values ('wellness-welcome','wellness','Sunrise yoga & breathwork on the quad','2026-10-25 07:00:00+05:30','Central Quad Lawn') on conflict (id) do nothing;
+insert into public.club_announcements(club_id,title,body) select 'wellness','Welcome to Mind & Wellness','Yoga mats provided! Start your Sunday with gentle sun salutations and calming breathwork.' where not exists (select 1 from public.club_announcements where club_id='wellness' and title='Welcome to Mind & Wellness');
+
 commit;
 
 -- Assign a club admin using an existing profile UUID:

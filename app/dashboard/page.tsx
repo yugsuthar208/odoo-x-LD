@@ -586,6 +586,8 @@ export default function Home() {
           clubsBusy={clubWorkspace.loading || clubWorkspace.busy}
         />
 
+        {role !== "Student" && <div className="approval-inbox-banner"><button onClick={() => setSection("Approvals")}>Open my approval inbox <strong>{clubWorkspace.data.requests.filter((r) => canReview(clubWorkspace.actor, r) || role === "Student Council" && r.status === "approved_funding").length} awaiting action</strong></button><span>Requests move to the next authority after each approval.</span></div>}
+
         {notifOpen && (
           <NotificationPopover
             events={events}
@@ -713,7 +715,7 @@ export default function Home() {
             )}
 
             {section === "Council" && (
-              <CouncilModule
+              role === "Student Council" ? <GovernanceModule key={role} workspace={clubWorkspace} /> : <CouncilModule
                 setSection={setSection}
                 setModal={setModal}
                 councilIdeas={councilIdeas}

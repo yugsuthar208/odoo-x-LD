@@ -17,15 +17,49 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
   const [error, setError] = useState("");
   const lock = useRef(false);
   const generation = useRef(0);
+  const revision = useRef(0);
+  const refreshing = useRef(false);
   const userId = preview ? `preview:${role}` : profileId;
 
   const readPreview = (): ClubData => {
     const saved = localStorage.getItem(storageKey);
     if (!saved) return previewClubData();
-    const parsed = JSON.parse(saved);
-    if (![parsed.memberships, parsed.events, parsed.announcements, parsed.rsvps].every(Array.isArray)) throw new Error("Club preview data could not be loaded.");
-    const defaults = previewClubData();
-    return { ...defaults, ...parsed, accounts: parsed.accounts || defaults.accounts, ledger: parsed.ledger || defaults.ledger };
+    try {
+      const parsed = JSON.parse(saved);
+      if (![parsed.memberships, parsed.events, parsed.announcements, parsed.rsvps].every(Array.isArray)) {
+        return previewClubData();
+      }
+      const defaults = previewClubData();
+
+      // Ensure newly added clubs have their accounts, events, and announcements merged
+      const existingAccountIds = new Set((parsed.accounts || []).map((a: { id: string }) => a.id));
+      const accounts = [...(parsed.accounts || defaults.accounts), ...defaults.accounts.filter((a) => !existingAccountIds.has(a.id))];
+
+      const existingEventIds = new Set((parsed.events || []).map((e: { id: string }) => e.id));
+      const events = [...(parsed.events || []), ...defaults.events.filter((e) => !existingEventIds.has(e.id))];
+
+      const existingAnnouncementTitles = new Set((parsed.announcements || []).map((a: { title: string; club_id?: string }) => `${a.club_id || ""}:${a.title}`));
+      const announcements = [...(parsed.announcements || []), ...defaults.announcements.filter((a) => !existingAnnouncementTitles.has(`${a.club_id || ""}:${a.title}`))];
+
+      const existingMembershipKeys = new Set((parsed.memberships || []).map((m: { club_id: string; user_id: string }) => `${m.club_id}:${m.user_id}`));
+      const memberships = [...(parsed.memberships || []), ...defaults.memberships.filter((m) => !existingMembershipKeys.has(`${m.club_id}:${m.user_id}`))];
+
+      const existingRsvps = new Set((parsed.rsvps || []).map((r: { event_id: string; user_id: string }) => `${r.event_id}:${r.user_id}`));
+      const rsvps = [...(parsed.rsvps || []), ...defaults.rsvps.filter((r) => !existingRsvps.has(`${r.event_id}:${r.user_id}`))];
+
+      return {
+        ...defaults,
+        ...parsed,
+        accounts,
+        events,
+        announcements,
+        memberships,
+        rsvps,
+        ledger: parsed.ledger || defaults.ledger,
+      };
+    } catch {
+      return previewClubData();
+    }
   };
 
   const fetchData = useCallback(async (): Promise<ClubData> => {
@@ -50,25 +84,30 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
   }, [preview, profileId]);
 
   const refresh = useCallback(async () => {
+    if (lock.current || refreshing.current) return;
     const version = generation.current;
+    const readRevision = revision.current;
+    refreshing.current = true;
     try {
       const next = await fetchData();
-      if (version === generation.current) { setData(next); setError(""); }
+      if (version === generation.current && readRevision === revision.current) { setData(next); setError(""); }
     } catch (e) {
-      if (version === generation.current) { setData(emptyClubData()); setError(e instanceof Error ? e.message : "Unable to load clubs."); }
-    } finally { if (version === generation.current) setLoading(false); }
+      if (version === generation.current && readRevision === revision.current) { setData(emptyClubData()); setError(e instanceof Error ? e.message : "Unable to load clubs."); }
+    } finally { refreshing.current = false; if (version === generation.current) setLoading(false); }
   }, [fetchData]);
 
   useEffect(() => {
     generation.current++;
+    refreshing.current = false;
     setData(emptyClubData());
     setLoading(true);
     if (!ready) return;
     void refresh();
     const reload = () => { if (!lock.current) void refresh(); };
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible") reload(); }, 5000);
     window.addEventListener("focus", reload);
     window.addEventListener("storage", reload);
-    return () => { generation.current++; window.removeEventListener("focus", reload); window.removeEventListener("storage", reload); };
+    return () => { generation.current++; window.clearInterval(timer); window.removeEventListener("focus", reload); window.removeEventListener("storage", reload); };
   }, [ready, role, refresh]);
 
   const actor: GovernanceActor = { role, userId, name, leadClubs: preview ? data.assignments.filter((a) => a.user_id === userId && a.role === "Club Leader").map((a) => a.club_id) : data.adminClubs, facultyClubs: preview ? data.assignments.filter((a) => a.user_id === userId && a.role === "Faculty").map((a) => a.club_id) : data.facultyClubs };
@@ -80,7 +119,7 @@ export function useClubWorkspace(ready: boolean, preview: boolean, profileId: st
 
   async function mutate(local: (current: ClubData) => ClubData, remote: () => PromiseLike<{ error: { message: string } | null }>) {
     if (lock.current || loading || !ready) return false;
-    lock.current = true; setBusy(true); setError("");
+    lock.current = true; revision.current++; setBusy(true); setError("");
     const version = generation.current;
     try {
       let next: ClubData;

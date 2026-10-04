@@ -1062,3 +1062,1263 @@ small {
 .governance-table th,.governance-table td { padding:12px 10px; text-align:left; border-bottom:1px solid var(--line); }
 .governance-table td:last-child { white-space:nowrap; }
 @media(max-width:700px) { .governance-form { grid-template-columns:1fr; } .governance-workspace .finance-summary { grid-template-columns:1fr; } .club-balance-grid { grid-template-columns:1fr; } }
+.approval-inbox-banner { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin:16px 32px 0; font-size:12px; color:var(--muted); }
+.approval-inbox-banner button { padding:10px 14px; border:1px solid #c8cebf; border-radius:8px; background:#edf3e9; color:#31513d; }
+.approval-inbox-banner strong { margin-left:12px; }
+.request-recipient { padding:10px 12px; background:#edf3e9; border-radius:8px; font-size:13px; }
+
+/* =========================================================================
+   Rich Club Detail View, Bento Grids, Tabs, and Informative Components
+   ========================================================================= */
+.club-detail-container { animation: toast-in 0.3s ease; }
+.club-nav-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.club-breadcrumb { font-size: 11px; color: var(--muted); }
+.club-breadcrumb strong { color: var(--ink); font-weight: 600; }
+.club-detail-header {
+  position: relative;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(39, 43, 40, 0.04);
+  margin-bottom: 24px;
+}
+.club-detail-header.mint-theme { background: linear-gradient(135deg, #ffffff 60%, #f0f7f2 100%); }
+.club-detail-header.lilac-theme { background: linear-gradient(135deg, #ffffff 60%, #f6f3fc 100%); }
+.club-detail-header.yellow-theme { background: linear-gradient(135deg, #ffffff 60%, #fdf9ed 100%); }
+.club-detail-header.pink-theme { background: linear-gradient(135deg, #ffffff 60%, #fcf3f0 100%); }
+
+.club-detail-icon-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.club-detail-header .club-detail-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-size: 44px;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+.club-badge-tag {
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #edf3e9;
+  color: #355d47;
+  font: 600 9px 'DM Mono', monospace;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+.club-detail-main { flex: 1; min-width: 0; }
+.club-detail-main h1 { font-family: Fraunces, serif; font-size: clamp(32px, 4.5vw, 44px); margin: 6px 0 10px; letter-spacing: -1.2px; line-height: 1.1; }
+.club-tagline { font-size: 13px; color: #555d54; line-height: 1.6; max-width: 780px; margin: 0 0 18px; }
+
+.club-stats-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: #fbfaf6;
+  border: 1px solid #e7e6dc;
+  border-radius: 10px;
+}
+.stat-pill .stat-icon { font-size: 15px; }
+.stat-pill small { display: block; font: 700 8px 'DM Mono', monospace; color: #888d84; letter-spacing: 0.7px; }
+.stat-pill b { display: block; font-size: 11px; font-weight: 600; color: #323b33; margin-top: 2px; }
+
+.club-status-pill {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.club-status-pill.approved { background: #eaf4eb; color: #356345; border: 1px solid #cbe3cd; }
+.club-status-pill.pending { background: #fdf6e2; color: #8c732a; border: 1px solid #fae6aa; }
+.club-status-pill.rejected { background: #fdeee8; color: #ab573e; border: 1px solid #f6cfc3; }
+.club-status-pill.admin { background: #eeeaf8; color: #6b559b; border: 1px solid #dad0f2; }
+
+.btn-action { border: 0; border-radius: 8px; padding: 10px 18px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s ease; }
+.btn-action.join-primary-btn { background: #31513d; color: white; }
+.btn-action.join-primary-btn:hover { background: #263f30; transform: translateY(-1px); }
+.btn-action.leave-btn { background: #f5f0eb; color: #8c5d4b; border: 1px solid #e7dcd6; }
+.btn-action.leave-btn:hover { background: #fae4dc; }
+.btn-action.cancel-btn { background: #f9f6ee; color: #787560; border: 1px solid #e5e0d2; }
+.btn-refresh { background: #f2f3ee; color: #535c52; border: 1px solid #dfdfd6; border-radius: 8px; padding: 9px 14px; font-size: 11px; cursor: pointer; }
+
+/* Sub Navigation Tabs */
+.club-tab-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.club-tab-btn {
+  padding: 10px 18px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #7b8076;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.club-tab-btn:hover { color: var(--ink); }
+.club-tab-btn.active {
+  color: #31513d;
+  font-weight: 700;
+  border-bottom-color: #31513d;
+}
+
+.club-tab-content { display: grid; gap: 22px; }
+.tab-hidden { display: none !important; }
+.tab-active { display: block !important; }
+
+/* Overview Bento */
+.club-about-text { font-size: 14px; line-height: 1.8; color: #434a42; margin-bottom: 20px; }
+.club-tags-wrap { padding-top: 18px; border-top: 1px solid var(--line); }
+.club-tag-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.club-tag-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f1f4ed;
+  color: #40604c;
+  font: 550 11px 'DM Sans', sans-serif;
+  border: 1px solid #e0e8db;
+}
+
+.club-bento-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 20px; }
+.bento-card { margin: 0; }
+.perks-list { display: grid; gap: 14px; margin-top: 14px; }
+.perk-row { display: flex; gap: 12px; align-items: flex-start; }
+.perk-check {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e3efe4;
+  color: #3b6b4b;
+  font-size: 11px;
+  font-weight: 700;
+}
+.perk-row p { margin: 0; font-size: 12px; line-height: 1.55; color: #454d44; }
+
+.eligibility-box {
+  background: #f7f9f5;
+  border: 1px solid #e1e9de;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #445647;
+  margin-bottom: 20px;
+}
+.section-subtitle { font-family: Fraunces, serif; font-size: 19px; margin: 0 0 14px; color: var(--ink); }
+.channel-rows { display: grid; gap: 10px; }
+.channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #faf9f4;
+  border: 1px solid #eeebe0;
+}
+.channel-icon { font-size: 16px; color: #58755c; }
+.channel-item small { display: block; font: 700 8px 'DM Mono', monospace; color: #94968c; letter-spacing: 0.6px; }
+.channel-item b { font-size: 12px; color: #323b32; font-weight: 600; }
+
+.faq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 14px; }
+.faq-card {
+  padding: 18px;
+  border-radius: 12px;
+  background: #fbfaf6;
+  border: 1px solid #eae8de;
+}
+.faq-card h3 { font-size: 13px; font-weight: 650; margin: 0 0 8px; color: #2e362e; }
+.faq-card p { margin: 0; font-size: 12px; line-height: 1.6; color: #646b62; }
+
+/* Projects Tab */
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 14px; }
+.project-card {
+  padding: 20px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e5e6de;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+.project-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.project-card-header h3 { font-family: Fraunces, serif; font-size: 17px; margin: 0; letter-spacing: -0.3px; }
+.project-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font: 600 9px 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.status-sprint { background: #e3efe4; color: #326342; border: 1px solid #c9decb; }
+.status-prod { background: #fdf5df; color: #856a23; border: 1px solid #f6e6b4; }
+.status-dev { background: #eeeaf8; color: #614d8e; border: 1px solid #dbd1f4; }
+.project-card p { font-size: 12px; color: #5a6358; line-height: 1.6; flex: 1; margin: 0 0 16px; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.project-tag { padding: 4px 8px; border-radius: 6px; background: #f2f3ee; color: #586156; font-size: 10px; font-weight: 500; }
+
+.milestones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 14px; }
+.milestone-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 12px;
+  background: #faf8f2;
+  border: 1px solid #ece8db;
+}
+.trophy-icon { font-size: 26px; }
+.milestone-content h3 { font-size: 13px; font-weight: 650; margin: 4px 0 6px; line-height: 1.4; }
+.milestone-year { font: 700 9px 'DM Mono', monospace; color: #9a9484; letter-spacing: 0.5px; }
+.milestone-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; background: #ebdcb9; color: #695221; font: 600 9px 'DM Mono', monospace; }
+
+/* Leadership */
+.leadership-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 16px; }
+.leadership-card {
+  padding: 20px;
+  border-radius: 14px;
+  background: #fbfaf6;
+  border: 1px solid #e7e6dc;
+}
+.leadership-role-pill { display: inline-block; padding: 4px 8px; border-radius: 6px; background: #e8eee4; color: #3c6147; font: 700 8px 'DM Mono', monospace; letter-spacing: 0.7px; margin-bottom: 12px; }
+.leadership-card h3 { font-family: Fraunces, serif; font-size: 18px; margin: 0 0 6px; letter-spacing: -0.4px; }
+.leadership-card p { margin: 0 0 4px; font-size: 12px; font-weight: 550; color: #434c41; }
+.leadership-card small { color: #858c81; font-size: 11px; }
+
+.members-directory-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.member-list-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; background: #fff; border: 1px solid #e7e8e1; }
+.member-avatar { width: 34px; height: 34px; border-radius: 50%; background: #dceade; color: #386045; display: grid; place-items: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.member-info b { display: block; font-size: 12px; color: #2e362e; }
+.member-info small { color: #878f84; font-size: 10px; }
+
+/* Card Grid Overhauls */
+.club-card-badge {
+  position: absolute;
+  top: 11px;
+  right: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #3b5c46;
+  font: 700 8px 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+}
+.club-card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 12px; }
+.card-tag-item { padding: 3px 8px; border-radius: 4px; background: #f2f4ee; color: #506153; font: 500 9px 'DM Mono', monospace; }
+.pending-summary-panel { background: #fdfaf2; border-color: #ede2c9; }
+.pending-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pending-chip-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid #dfd1b2; background: #fff; color: #6b572a; font-weight: 600; font-size: 12px; cursor: pointer; }
+.pending-chip-btn span { margin-left: 6px; }
+
+.event-info h3 { margin: 0 0 4px; font-size: 15px; font-weight: 650; }
+.event-desc { font-size: 12px; color: #6d746a; margin: 6px 0 0; }
+.attending-badge { display: inline-block; margin-top: 8px; font-size: 11px; color: #3b6e49; font-weight: 600; background: #eaf4ec; padding: 4px 10px; border-radius: 6px; }
+.rsvp-btn { padding: 9px 18px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; }
+.rsvp-btn.confirm { background: #31513d; color: white; border: 0; }
+.rsvp-btn.cancel { background: #fdf2ee; color: #9f503a; border: 1px solid #eed0c5; }
+@media (max-width: 900px) {
+  .club-detail-container { min-width: 0; max-width: 100%; }
+  .club-bento-grid { grid-template-columns: 1fr; min-width: 0; }
+  .club-detail-header { flex-direction: column; padding: 20px; gap: 16px; min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .club-stats-strip { flex-direction: column; min-width: 0; }
+  .club-panel { min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .bento-card { min-width: 0; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .milestones-grid { grid-template-columns: 1fr; }
+  .leadership-grid { grid-template-columns: 1fr; }
+  .members-directory-list { grid-template-columns: 1fr; }
+  .club-tab-bar { max-width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .club-detail-container { overflow-x: hidden; }
+  .club-detail-header { padding: 14px; gap: 12px; }
+  .club-panel { padding: 14px; }
+  .club-tab-bar { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .club-tab-btn { padding: 8px 12px; font-size: 12px; }
+  .club-stats-strip .stat-pill { width: 100%; box-sizing: border-box; }
+}
+
+/* =========================================================================
+   Interactive Login Experience, Mouse Parallax, Bento Story & ScrollTrigger
+   ========================================================================= */
+
+.login-scroll-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #fbfaf6;
+}
+
+/* Fixed Reading Progress Bar */
+.login-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.04);
+}
+.login-scroll-progress-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #446e53 0%, #d87d5b 50%, #766399 100%);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Floating Glass Island Navigation Header */
+.login-floating-nav {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  z-index: 900;
+  width: min(1140px, calc(100vw - 32px));
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(224, 226, 218, 0.85);
+  box-shadow: 0 10px 35px rgba(28, 38, 31, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.login-floating-nav.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.floating-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 750;
+  font-size: 14px;
+}
+.floating-nav-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #e6efe1;
+  color: #335d48;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 800;
+}
+.floating-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.floating-nav-link {
+  color: #636b61;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 550;
+  transition: color 0.2s ease;
+}
+.floating-nav-link:hover {
+  color: #31513d;
+}
+.floating-nav-cta {
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: #31513d;
+  color: white;
+  border: 0;
+  font: 600 11px 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.floating-nav-cta:hover {
+  background: #253e2e;
+  transform: translateY(-1px);
+}
+
+/* Password Input & Eye Toggle */
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-input-wrap input {
+  width: 100%;
+  padding-right: 42px !important;
+}
+.toggle-password-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  padding: 4px;
+  color: #838a7f;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: color 0.2s ease;
+}
+.toggle-password-btn:hover {
+  color: #31513d;
+}
+
+/* Password Strength Bar */
+.password-strength-wrap {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+}
+.strength-bars {
+  display: flex;
+  gap: 4px;
+  height: 3px;
+}
+.strength-bar-seg {
+  flex: 1;
+  height: 100%;
+  border-radius: 2px;
+  background: #e3e4dc;
+  transition: background 0.3s ease;
+}
+.strength-bar-seg.active-weak { background: #e0705a; }
+.strength-bar-seg.active-medium { background: #dca042; }
+.strength-bar-seg.active-strong { background: #4a9163; }
+.password-strength-text {
+  font: 500 9px 'DM Mono', monospace;
+  color: #8b9186;
+}
+
+/* Interactive Role Selector Pills */
+.role-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.role-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+.role-pill-btn {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #dcdfd5;
+  color: #555d52;
+  font: 600 10px 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.role-pill-btn:hover {
+  background: #f1f3eb;
+  color: #272b28;
+}
+.role-pill-btn.active {
+  background: #31513d;
+  color: #fff;
+  border-color: #31513d;
+  box-shadow: 0 2px 8px rgba(49, 81, 61, 0.25);
+}
+
+/* Active Role Preview Card */
+.role-preview-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #dfe3d7;
+  box-shadow: 0 4px 14px rgba(34, 43, 36, 0.04);
+  margin-top: 10px;
+  animation: toast-in 0.25s ease;
+}
+.role-preview-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.role-preview-badge {
+  font: 700 9px 'DM Mono', monospace;
+  letter-spacing: 0.6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #eef3e9;
+  color: #3b6348;
+}
+.role-preview-desc {
+  font-size: 11px;
+  color: #525a4f;
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+.role-perks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.role-perk-chip {
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #f4f6ef;
+  color: #4a5c4c;
+  font: 550 9px 'DM Mono', monospace;
+}
+.role-instant-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d5dfd1;
+  border-radius: 8px;
+  background: #eaf1e7;
+  color: #335d44;
+  font: 600 11px 'DM Mono', monospace;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.role-instant-btn:hover {
+  background: #dde8d9;
+  transform: translateY(-1px);
+}
+
+/* Hero Scroll Down Hint */
+.scroll-down-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  color: #bdccb9;
+  font: 600 11px 'DM Mono', monospace;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.scroll-down-hint:hover {
+  color: #f6e8c6;
+}
+.scroll-down-arrow {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f6e8c6;
+  font-size: 11px;
+  animation: pulse-arrow 2s ease-in-out infinite;
+}
+@keyframes pulse-arrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* =========================================================================
+   Scroll Section 1: The Campus Commons Ecosystem (Bento Grid)
+   ========================================================================= */
+
+.login-ecosystem-section {
+  padding: 120px 32px 90px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.section-header-centered {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 54px;
+}
+.section-header-centered .eyebrow {
+  color: #4f6e56;
+  margin-bottom: 12px;
+}
+.section-header-centered h2 {
+  font-family: Fraunces, serif;
+  font-size: clamp(34px, 4.5vw, 54px);
+  margin: 0 0 16px;
+  letter-spacing: -1.6px;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.section-header-centered p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #646b61;
+  margin: 0;
+}
+
+.login-bento-grid {
+  display: grid;
+  grid-template-columns: 1.28fr 0.72fr;
+  gap: 24px;
+}
+.bento-card-large {
+  padding: 34px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 24px rgba(33, 44, 36, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+.bento-card-small {
+  padding: 30px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 24px rgba(33, 44, 36, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+.bento-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.bento-card-header h3 {
+  font-family: Fraunces, serif;
+  font-size: 24px;
+  margin: 4px 0 6px;
+  letter-spacing: -0.5px;
+}
+.bento-card-header p {
+  font-size: 12px;
+  color: #6c7368;
+  margin: 0;
+}
+.bento-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #eef3e9;
+  color: #3b6348;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+/* Category Filter for Bento Clubs */
+.bento-filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.bento-filter-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e0e3d9;
+  background: #fbfaf6;
+  color: #6a7166;
+  font: 600 10px 'DM Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.bento-filter-chip:hover {
+  background: #f1f3ea;
+  color: var(--ink);
+}
+.bento-filter-chip.active {
+  background: #31513d;
+  color: white;
+  border-color: #31513d;
+}
+
+.bento-clubs-showcase {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: auto;
+}
+.bento-club-item {
+  padding: 16px;
+  border-radius: 14px;
+  background: #fbfaf6;
+  border: 1px solid #ebece4;
+  display: flex;
+  flex-direction: column;
+}
+.bento-club-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.bento-club-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e2e4dc;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+}
+.bento-club-cat {
+  font: 700 8px 'DM Mono', monospace;
+  color: #889084;
+}
+.bento-club-item h4 {
+  font-family: Fraunces, serif;
+  font-size: 16px;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+.bento-club-item p {
+  font-size: 11px;
+  color: #636b60;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+.bento-club-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+.bento-club-tag {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #edf0e6;
+  color: #4f6350;
+  font: 550 8px 'DM Mono', monospace;
+}
+
+/* Governance Workflow Diagram in Bento */
+.gov-steps-diagram {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+.gov-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fbfaf6;
+  border: 1px solid #eaebe2;
+}
+.gov-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #31513d;
+  color: white;
+  display: grid;
+  place-items: center;
+  font: 700 10px 'DM Mono', monospace;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.gov-step-copy b {
+  display: block;
+  font-size: 12px;
+  color: #2b332c;
+}
+.gov-step-copy p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #6d7468;
+  line-height: 1.45;
+}
+
+/* Event Radar Bento */
+.event-radar-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+.event-radar-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fbfaf6;
+  border: 1px solid #ebece2;
+}
+.event-radar-info b {
+  display: block;
+  font-size: 12px;
+  color: #2b332c;
+}
+.event-radar-info small {
+  display: block;
+  font: 500 10px 'DM Mono', monospace;
+  color: #7b8376;
+  margin-top: 3px;
+}
+.event-radar-rsvp {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #edf3e9;
+  color: #3b6348;
+  border: 1px solid #d5dfd1;
+  font: 600 10px 'DM Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.event-radar-rsvp:hover {
+  background: #31513d;
+  color: white;
+}
+.event-radar-rsvp.attending {
+  background: #31513d;
+  color: white;
+}
+
+/* =========================================================================
+   Scroll Section 2: Choose Your Campus Role (Role Explorer Gallery)
+   ========================================================================= */
+
+.login-roles-section {
+  padding: 100px 32px 110px;
+  background: linear-gradient(180deg, #fbfaf6 0%, #f4f6ee 100%);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.role-showcase-card {
+  padding: 24px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid #e1e3da;
+  box-shadow: 0 4px 18px rgba(34, 43, 36, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.role-showcase-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(34, 43, 36, 0.08);
+}
+.role-icon-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.role-big-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+.role-big-icon.student { background: #e8f3ea; color: #366547; }
+.role-big-icon.leader { background: #fdf5de; color: #8a6e26; }
+.role-big-icon.faculty { background: #edf0fa; color: #49639c; }
+.role-big-icon.council { background: #fbf0ea; color: #9c5c46; }
+.role-big-icon.admin { background: #eeeaf8; color: #6d549c; }
+
+.role-badge-pill {
+  font: 700 8px 'DM Mono', monospace;
+  letter-spacing: 0.6px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #f1f3ec;
+  color: #556150;
+}
+.role-showcase-card h3 {
+  font-family: Fraunces, serif;
+  font-size: 22px;
+  margin: 0 0 6px;
+  letter-spacing: -0.4px;
+}
+.role-tagline {
+  font-size: 11px;
+  color: #727a6f;
+  margin: 0 0 14px;
+}
+.role-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+.role-features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  color: #474f44;
+  line-height: 1.5;
+}
+.role-features-list li span {
+  color: #3b6348;
+  font-weight: 700;
+}
+.role-launch-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d5ded1;
+  background: #eef4ec;
+  color: #325841;
+  font: 600 11px 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.role-launch-btn:hover {
+  background: #31513d;
+  color: white;
+  border-color: #31513d;
+}
+
+/* =========================================================================
+   Scroll Section 3: Campus Voices & Innovation Highlights
+   ========================================================================= */
+
+.login-voices-section {
+  padding: 110px 32px 100px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.voices-quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+  margin-bottom: 50px;
+}
+.voice-quote-card {
+  padding: 28px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(34, 43, 36, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.quote-text {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #40483e;
+  margin: 0 0 20px;
+  font-style: italic;
+}
+.quote-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e4eee1;
+  color: #366347;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+.author-info b {
+  display: block;
+  font-size: 13px;
+  color: #272d26;
+}
+.author-info small {
+  display: block;
+  font-size: 11px;
+  color: #7b8376;
+}
+
+/* Hall of Fame Projects Row */
+.hall-of-fame-panel {
+  padding: 34px;
+  border-radius: 24px;
+  background: #faf8f2;
+  border: 1px solid #eae6d8;
+}
+.hall-of-fame-panel h3 {
+  font-family: Fraunces, serif;
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+.hall-of-fame-panel p {
+  font-size: 13px;
+  color: #697063;
+  margin: 0 0 24px;
+}
+.hall-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.hall-project-item {
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e3d7;
+}
+.hall-project-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.hall-badge {
+  font: 700 8px 'DM Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #edf3e8;
+  color: #3b6348;
+}
+.hall-status-pill {
+  font: 600 8px 'DM Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #fdf5df;
+  color: #786121;
+}
+.hall-project-item h4 {
+  font-family: Fraunces, serif;
+  font-size: 17px;
+  margin: 0 0 6px;
+}
+.hall-project-item p {
+  font-size: 11px;
+  color: #646b5f;
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+
+/* =========================================================================
+   Scroll Section 4: Grand CTA Banner
+   ========================================================================= */
+
+.login-cta-section {
+  padding: 70px 32px 120px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.login-cta-card {
+  position: relative;
+  overflow: hidden;
+  padding: 72px 54px;
+  border-radius: 32px;
+  background: radial-gradient(circle at 75% 20%, #365942 0%, #203328 65%, #18281f 100%);
+  color: #f8f6ed;
+  box-shadow: 0 20px 60px rgba(22, 35, 27, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+.login-cta-content {
+  max-width: 600px;
+  position: relative;
+  z-index: 2;
+}
+.login-cta-content .eyebrow {
+  color: #c0d1bd;
+  margin-bottom: 12px;
+}
+.login-cta-content h2 {
+  font-family: Fraunces, serif;
+  font-size: clamp(38px, 5vw, 60px);
+  margin: 0 0 16px;
+  letter-spacing: -2px;
+  line-height: 1.02;
+  color: #fff;
+}
+.login-cta-content p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #c9d4c5;
+  margin: 0 0 32px;
+}
+.login-cta-buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.cta-primary-btn {
+  padding: 14px 28px;
+  border-radius: 9999px;
+  background: #fbfaf6;
+  color: #263e2e;
+  border: 0;
+  font: 700 12px 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+.cta-primary-btn:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+.cta-secondary-btn {
+  padding: 14px 26px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font: 600 12px 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cta-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+.login-cta-decoration {
+  position: absolute;
+  right: -20px;
+  bottom: -40px;
+  font-size: 260px;
+  color: rgba(255, 255, 255, 0.04);
+  font-family: 'Patrick Hand', cursive;
+  pointer-events: none;
+}
+
+/* =========================================================================
+   Universal Clean Footer
+   ========================================================================= */
+
+.login-universal-footer {
+  padding: 34px 47px;
+  border-top: 1px solid var(--line);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #8b9287;
+  font: 500 10px 'DM Mono', monospace;
+  letter-spacing: 0.6px;
+}
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.footer-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #40694e;
+}
+.footer-status-pill .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #508a62;
+}
+.back-to-top-btn {
+  background: none;
+  border: 0;
+  color: #637562;
+  font: 600 10px 'DM Mono', monospace;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+.back-to-top-btn:hover {
+  background: #f1f3ec;
+  color: var(--ink);
+}
+
+/* =========================================================================
+   Responsive Breakpoints for Login Scroll Experience
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+  .login-bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .bento-clubs-showcase {
+    grid-template-columns: 1fr;
+  }
+  .login-cta-card {
+    padding: 48px 36px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-nav-links {
+    display: none;
+  }
+  .login-ecosystem-section {
+    padding: 70px 18px 50px;
+  }
+  .login-roles-section {
+    padding: 70px 18px 80px;
+  }
+  .login-voices-section {
+    padding: 70px 18px 60px;
+  }
+  .login-cta-section {
+    padding: 40px 18px 80px;
+  }
+  .login-cta-card {
+    padding: 36px 24px;
+  }
+  .login-universal-footer {
+    flex-direction: column;
+    gap: 14px;
+    text-align: center;
+    padding: 24px 18px;
+  }
+}
+

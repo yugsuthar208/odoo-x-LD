@@ -4,3 +4,6 @@ node_modules/
 *.tsbuildinfo
 .env*
 !.env.example
+scratch/
+__pycache__/
+*.py[cod]

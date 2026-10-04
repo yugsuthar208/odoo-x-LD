@@ -31,7 +31,7 @@ with sync_playwright() as p:
         expect(page.get_by_role('region',name='Club members')).to_have_count(0 if hidden else 1)
     nav('Discover clubs')
     page.wait_for_load_state('networkidle')
-    expect(page.locator('.clubs-workspace .club-card')).to_have_count(10)
+    expect(page.locator('.clubs-workspace .club-card')).to_have_count(24)
     page.get_by_role('textbox',name='Search clubs').fill('IEEE')
     expect(page.locator('.clubs-workspace .club-card')).to_have_count(1)
     open_club('IEEE')
@@ -42,7 +42,7 @@ with sync_playwright() as p:
     page.reload()
     expect(page.get_by_text('Request pending',exact=True)).to_be_visible()
     private()
-    print('PASS: 10 clubs, search, public page, pending request, reload restriction')
+    print('PASS: 24 clubs, search, public page, pending request, reload restriction')
     nav('My Clubs')
     expect(page.locator('.clubs-workspace .club-card')).to_have_count(0)
     expect(page.get_by_role('button',name='IEEE · Pending')).to_be_visible()
@@ -53,13 +53,13 @@ with sync_playwright() as p:
     nav('My Clubs')
     expect(page.locator('.clubs-workspace .club-card')).to_have_count(2)
     open_club('IEEE'); private(False)
-    page.get_by_role('button',name='RSVP',exact=True).click()
+    page.get_by_role('button',name='RSVP',exact=True).first.click()
     expect(page.get_by_role('button',name='Cancel RSVP',exact=True)).to_be_visible()
     page.reload()
     expect(page.get_by_role('button',name='Cancel RSVP',exact=True)).to_be_visible()
     page.get_by_role('button',name='Cancel RSVP',exact=True).click()
-    expect(page.get_by_role('button',name='RSVP',exact=True)).to_be_visible()
-    page.get_by_role('button',name='RSVP',exact=True).click()
+    expect(page.get_by_role('button',name='RSVP',exact=True).first).to_be_visible()
+    page.get_by_role('button',name='RSVP',exact=True).first.click()
     expect(page.get_by_role('region',name='Club members')).to_contain_text('Aarav Sharma')
     expect(page.get_by_role('region',name='Club announcements')).to_contain_text('breadboard')
     print('PASS: batch auto-accept, My Clubs, members, announcements, RSVP/cancel/persistence')
@@ -104,26 +104,32 @@ with sync_playwright() as p:
     page.reload(); private()
     page.get_by_role('switch').check()
     page.get_by_role('button',name='Request to join',exact=True).click()
-    expect(page.get_by_role('button',name='RSVP',exact=True)).to_be_visible()
+    expect(page.get_by_role('button',name='RSVP',exact=True).first).to_be_visible()
     expect(page.get_by_role('button',name='Cancel RSVP',exact=True)).to_have_count(0)
     nav('My Clubs'); open_club('Coding')
     expect(page.get_by_role('region',name='Club announcements')).not_to_contain_text('Robotics team update')
     print('PASS: club-admin scope, campus-admin approval, cancellation, leaving clears RSVP, club isolation')
     # Enable auto-accept and visit every club, checking that its own content is present.
-    for name in ['IEEE','Singing','Dancing','Photography','Robotics','Drama','Debate','Coding','Design Society','Green Collective']:
+    all_club_names = [
+        'IEEE', 'Coding', 'Robotics', 'AI & Data Science', 'Aerospace & Rocketry', 'Cybersecurity',
+        'Photography', 'Design Society', 'Film Society', 'Fine Arts', 'Literary Society', 'Fashion & Apparel',
+        'Singing', 'Dancing', 'Drama', 'Music Band', 'Culinary Arts', 'Philosophy',
+        'Debate', 'Green Collective', 'E-Cell', 'Model UN & Diplomacy', 'Social Impact', 'Mind & Wellness'
+    ]
+    for name in all_club_names:
         nav('Discover clubs'); open_club(name)
         request = page.get_by_role('button',name='Request to join',exact=True)
         if request.count(): request.click()
         private(False)
-        expect(page.get_by_role('region',name='Club events').locator('article')).to_have_count(1)
+        expect(page.get_by_role('region',name='Club events').locator('article').first).to_be_visible()
         expect(page.get_by_role('region',name='Club announcements')).to_contain_text('Welcome to '+name)
-    nav('My Clubs'); expect(page.locator('.clubs-workspace .club-card')).to_have_count(10)
+    nav('My Clubs'); expect(page.locator('.clubs-workspace .club-card')).to_have_count(24)
     page.set_viewport_size({'width':390,'height':844})
     open_club('Photography')
-    expect(page.get_by_role('button',name='RSVP',exact=True)).to_be_visible()
+    expect(page.get_by_role('button',name='RSVP',exact=True).first).to_be_visible()
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile overflow'
     page.evaluate("window.scrollTo({top: 0, behavior: 'instant'})")
     page.screenshot(path=str(Path(os.environ.get('TEMP','.'))/'campus-clubs-mobile.png'),full_page=True)
     assert not errors, errors
-    print('PASS: all ten club pages, mobile layout, no browser errors')
+    print('PASS: all twenty-four club pages, mobile layout, no browser errors')
     browser.close()

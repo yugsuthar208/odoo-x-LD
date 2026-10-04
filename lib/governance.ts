@@ -16,7 +16,7 @@ export type GovernanceActor = { role: CampusRole; userId: string; name: string; 
 export type GovernanceCommand = { action: "submit" | "approve" | "reject" | "release" | "cancel" | "deposit"; club_id?: string; request_id?: string; kind?: RequestKind; title?: string; body?: string; amount?: number; details?: ClubRequest["details"]; note?: string };
 export const requestStatusLabels: Record<RequestStatus, string> = { pending_faculty: "Awaiting faculty", pending_admin: "Awaiting Admin authorization", approved_funding: "Awaiting Student Council release", completed: "Completed", rejected: "Rejected", cancelled: "Cancelled" };
 export const money = (paise: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(paise / 100);
-export const previewStaffClubs = ["ieee", "coding", "robotics", "design"];
+export const previewStaffClubs = ["ieee", "coding", "robotics", "design", "ai_ds", "aerospace", "cybersec", "photography", "film", "finearts", "singing", "music_band", "ecell", "mun", "green"];
 export const supervises = (actor: GovernanceActor, club: string) => actor.role === "Admin" || actor.role === "Faculty" && actor.facultyClubs.includes(club);
 export const leads = (actor: GovernanceActor, club: string) => actor.role === "Club Leader" && actor.leadClubs.includes(club);
 export const canPropose = (actor: GovernanceActor, club: string) => supervises(actor, club) || leads(actor, club);
